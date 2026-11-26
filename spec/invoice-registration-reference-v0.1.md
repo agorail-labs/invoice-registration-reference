@@ -146,10 +146,12 @@ documented format, and labelled so**:
 - *Status evidence (simulated format):* a JSON object with `simulated:
   true`, `kind: "scheme_status_response"`, the registration identifier,
   `status`, `observed_at`, `cancelled_at` (or null), the scheme rule
-  relied on, and a compact JWS (RS256) over those claims under the
-  scheme key supplied in the bundle, in a `jws` field beside a readable
-  `claims` copy. A live integration supplies the scheme's own
-  authenticated status response in this place.
+  relied on, and a compact JWS (RS256) over those claims, in a `jws`
+  field beside a readable `claims` copy. **Verify the status JWS using
+  the independently configured scheme key, and evaluate only the
+  verified claims** — the readable `claims` copy is never evaluated.
+  A live integration supplies the scheme's own authenticated status
+  response in this place.
 - *Payment event (simulated format):* a JSON object with `simulated:
   true`, `kind: "provider_capture_confirmation"`, the provider,
   `payment_id`, `checkout_id`, `status: "captured"`, `amount`,

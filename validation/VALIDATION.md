@@ -46,7 +46,13 @@ that change (and verifies in the harness, check 36 set).
    `dev.ucp.shopping.checkout` and `dev.ucp.shopping.order`, each an
    `allOf` over the published base schema (fetched from ucp.dev,
    version 2026-08-25) plus the extension's properties — the
-   composition UCP prescribes for extensions.
+   composition UCP prescribes for extensions. **Gate 2 addendum:** the
+   harness now resolves those fetches against a pinned cache of the
+   published schemas (`validation/schema_cache/`, 46 files fetched
+   from ucp.dev on 2026-11-26), because the live fetch path
+   intermittently truncates responses (http.client.IncompleteRead)
+   and a conformance run should not depend on it; cache misses still
+   fall back to the network. The harness result is unchanged: 36/36.
 3. **Strict mode (closed contract).** Every object key in every
    payload must be a property declared by one of the composed schemas
    — base checkout/order and their nested types (`line_item`, `item`,

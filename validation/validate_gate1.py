@@ -90,9 +90,29 @@ def dt(s: str) -> datetime:
 
 
 # ---------------------------------------------------------------- schemas
+CACHE = pathlib.Path(__file__).resolve().parent / "schema_cache"
+
+
 def retrieve(uri: str):
-    with urllib.request.urlopen(uri) as r:
-        return Resource.from_contents(json.loads(r.read()))
+    # Pinned cache first (Gate 2 reproducibility): the published schemas
+    # were fetched from ucp.dev on 2026-11-26 and pinned under
+    # validation/schema_cache, because the live fetch path intermittently
+    # truncates responses (http.client.IncompleteRead, observed
+    # 2026-11-26) and a conformance run should not depend on it. Cache
+    # misses fall back to the network with bounded retries.
+    marker = "/schemas/"
+    if marker in uri:
+        cached = CACHE / uri.split(marker, 1)[1]
+        if cached.exists():
+            return Resource.from_contents(json.loads(cached.read_text()))
+    last = None
+    for _ in range(5):
+        try:
+            with urllib.request.urlopen(uri) as r:
+                return Resource.from_contents(json.loads(r.read()))
+        except Exception as e:  # noqa: BLE001
+            last = e
+    raise last
 
 
 def main() -> int:

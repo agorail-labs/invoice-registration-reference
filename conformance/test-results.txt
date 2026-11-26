@@ -1,0 +1,27 @@
+test_allocation_does_not_add_up (test_verifier.ConformanceCases.test_allocation_does_not_add_up) ... ok
+test_authoritative_absence_contradicts_matches (test_verifier.ConformanceCases.test_authoritative_absence_contradicts_matches) ... ok
+test_cancelled_after_payment (test_verifier.ConformanceCases.test_cancelled_after_payment) ... ok
+test_cancelled_before_payment (test_verifier.ConformanceCases.test_cancelled_before_payment) ... ok
+test_cancelled_exactly_at_payment (test_verifier.ConformanceCases.test_cancelled_exactly_at_payment) ... ok
+test_genuine (test_verifier.ConformanceCases.test_genuine) ... ok
+test_lookup_failure_is_not_established_never_contradicted (test_verifier.ConformanceCases.test_lookup_failure_is_not_established_never_contradicted) ... ok
+test_mismatch_with_signed_artifact (test_verifier.ConformanceCases.test_mismatch_with_signed_artifact) ... ok
+test_reference_changed_same_price_signature_verdict_falls (test_verifier.ConformanceCases.test_reference_changed_same_price_signature_verdict_falls) ... ok
+test_registration_without_status_is_invalid (test_verifier.ConformanceCases.test_registration_without_status_is_invalid) ... ok
+test_same_registration_on_two_lines (test_verifier.ConformanceCases.test_same_registration_on_two_lines) ... ok
+test_status_not_established (test_verifier.ConformanceCases.test_status_not_established) ... ok
+test_unverified_status_claims_copy_is_never_evaluated (test_verifier.ConformanceCases.test_unverified_status_claims_copy_is_never_evaluated) ... ok
+test_valid_artifact_with_only_business_claim (test_verifier.ConformanceCases.test_valid_artifact_with_only_business_claim) ... ok
+test_validly_signed_status_for_different_irn_binds_separately (test_verifier.ConformanceCases.test_validly_signed_status_for_different_irn_binds_separately) ... ok
+test_example1_operator_sample (test_verifier.FileExamples.test_example1_operator_sample) ... ok
+test_example2_synthetic_full (test_verifier.FileExamples.test_example2_synthetic_full) ... ok
+test_example3_production_shaped_with_timezone (test_verifier.FileExamples.test_example3_production_shaped_with_timezone) ... ok
+test_example3_without_configured_timezone (test_verifier.FileExamples.test_example3_without_configured_timezone) ... ok
+test_capture_currency_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_currency_mutation_active_not_established) ... ok
+test_capture_payment_id_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_payment_id_mutation_active_not_established) ... ok
+test_order_checkout_id_mutation_signed_not_established (test_verifier.LeadMutationsOnExample2.test_order_checkout_id_mutation_signed_not_established) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.107s
+
+OK

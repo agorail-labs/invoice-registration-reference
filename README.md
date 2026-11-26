@@ -14,13 +14,17 @@ changes the invoice-only total.
 
 ## Current status and known limitations
 
-- **Gate 1 draft, private.** This repository is private until Gate 3.
-  Nothing here is published, filed, or served: the capability's schema
-  URL (`agorail-labs.github.io`) does not yet resolve, so authority
-  binding is prospective. Publication requires Arjun's written
-  approval at Gate 3.
-- **No verifier yet.** The verifier, tests and conformance suite are
-  Gate 2. `validation/` holds Gate 1 schema validation only.
+- **Gate 2 complete, private.** This repository is private until
+  Gate 3. Nothing here is published, filed, or served: the
+  capability's schema URL (`agorail-labs.github.io`) does not yet
+  resolve, so authority binding is prospective. Publication requires
+  Arjun's written approval at Gate 3.
+- **The verifier is a reference implementation**
+  (`verifier/invoice_reference_verifier.py`): it computes the three
+  verdicts from inputs against independently configured trust, and
+  its 22-test suite passes (`conformance/CONFORMANCE.md`). Status and
+  payment evidence remain the documented **simulated** formats — no
+  live scheme or provider channel is integrated in v0.1.
 - **Evidence levels — read this before trusting any claim.**
   Example 1 rests on the scheme operator's published sample — a
   signed **documentation vector**, not a live registration (signature
@@ -45,11 +49,18 @@ changes the invoice-only total.
 - `spec/` — normative specification (`invoice-registration-reference-v0.1.md`)
 - `schema/` — the capability definition (`invoice_reference.json`),
   with separate composed definitions for checkout and for order
-- `research/` — Gate 1 report: UCP's Payment Terms extension and AP2's
-  payment reference, what each already does, and what this adds
-- `examples/` — the two Gate 1 examples, each with fixture notes and
-  an evidence bundle
-- `validation/` — Gate 1 validation harness, method and results
+- `verifier/` — the Gate 2 reference verifier and its test suite
+- `conformance/` — the Gate 2 conformance mapping (13 build-order
+  cases plus the review carry-ins) and the recorded test output
+- `research/` — Gate 1 report (Payment Terms and AP2's payment
+  reference vs what this adds), the Gate 2 evidence register and fit
+  analysis
+- `examples/` — Examples 1–2 (Gate 1) and Example 3, the
+  production-shaped synthetic IRP case (Gate 2), each with fixture
+  notes and an evidence bundle
+- `validation/` — Gate 1 validation harness, method and results;
+  example builders; independently configured trust keys and the
+  pinned cache of the published UCP schemas
 
 ## The central demonstration
 

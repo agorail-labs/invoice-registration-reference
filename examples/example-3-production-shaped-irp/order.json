@@ -1,0 +1,95 @@
+{
+  "ucp": {
+    "version": "2026-08-25",
+    "capabilities": {
+      "dev.ucp.shopping.order": [
+        {
+          "version": "2026-08-25",
+          "schema": "https://ucp.dev/2026-08-25/schemas/shopping/order.json"
+        }
+      ],
+      "io.github.agorail-labs.shopping.invoice_reference": [
+        {
+          "version": "2026-11-26",
+          "extends": [
+            "dev.ucp.shopping.checkout",
+            "dev.ucp.shopping.order"
+          ],
+          "spec": "https://agorail-labs.github.io/invoice-registration-reference/spec/invoice-registration-reference-v0.1",
+          "schema": "https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json"
+        }
+      ]
+    }
+  },
+  "id": "ord_example3_production_shaped",
+  "checkout_id": "chk_example3_production_shaped",
+  "permalink_url": "https://example.com/orders/ord_example3_production_shaped",
+  "currency": "INR",
+  "line_items": [
+    {
+      "id": "li_1",
+      "item": {
+        "id": "item_controller_unit",
+        "title": "Industrial controller unit, as invoiced",
+        "price": 11800000
+      },
+      "quantity": {
+        "original": 1,
+        "total": 1,
+        "fulfilled": 0
+      },
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 11800000
+        },
+        {
+          "type": "total",
+          "amount": 11800000
+        }
+      ],
+      "status": "processing"
+    }
+  ],
+  "fulfillment": {
+    "expectations": []
+  },
+  "totals": [
+    {
+      "type": "subtotal",
+      "amount": 11800000
+    },
+    {
+      "type": "total",
+      "amount": 11800000
+    }
+  ],
+  "invoice_reference": [
+    {
+      "line_item_id": "li_1",
+      "document": {
+        "number": "EXMPL/2026-27/0043",
+        "type": "INV",
+        "issuer_tax_identity": "29ABCDE1234F1Z5",
+        "issue_date": "2026-11-20",
+        "total": 11800000
+      },
+      "allocation": {
+        "amount_applied": 11800000,
+        "balance_before": 11800000,
+        "balance_after": 0,
+        "instalment_number": 1
+      },
+      "registration": {
+        "scheme": "in_gst_einvoice_irp",
+        "identifier": "74e9ac7e9f35b8a5947b9cf8e678390413a3f198635f9b388580b1a3e987b325",
+        "artifact_digest": "sha256:95bb715a47740709ee512c2107b4987a7053ff2c5f0ba64bae3dd6b01727e251",
+        "registered_at": "2026-11-20T10:15:23+05:30"
+      },
+      "status": {
+        "value": "active",
+        "observed_at": "2026-11-20T15:40:00+05:30"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "simulated": true,
+  "kind": "provider_capture_confirmation",
+  "format": "Simulated provider-confirmed capture, in the documented Gate 1 format (specification section 7).",
+  "provider": "Simulated Payments Provider",
+  "payment_id": "pay_SIMULATED_0002",
+  "checkout_id": "chk_example3_production_shaped",
+  "status": "captured",
+  "amount": 11800000,
+  "currency": "INR",
+  "captured_at": "2026-11-20T15:42:10+05:30"
+}

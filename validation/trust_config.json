@@ -6,5 +6,11 @@
     "irp_public_key": "trust_keys/simulated_irp_public_key.pem",
     "merchant_public_key": "trust_keys/merchant_public_key.jwk.json",
     "expected_payment_id": "pay_SIMULATED_0001"
+  },
+  "example3": {
+    "irp_public_key": "trust_keys/ex3_irp_public_key.pem",
+    "merchant_public_key": "trust_keys/ex3_merchant_public_key.jwk.json",
+    "expected_payment_id": "pay_SIMULATED_0002",
+    "scheme_timezone": "Asia/Kolkata"
   }
 }

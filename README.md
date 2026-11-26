@@ -22,14 +22,19 @@ changes the invoice-only total.
 - **No verifier yet.** The verifier, tests and conformance suite are
   Gate 2. `validation/` holds Gate 1 schema validation only.
 - **Evidence levels — read this before trusting any claim.**
-  Example 1 rests on the scheme operator's published sample
-  (signature verified offline, with a negative control). Example 2 is
+  Example 1 rests on the scheme operator's published sample — a
+  signed **documentation vector**, not a live registration (signature
+  verified offline, with a negative control). Example 2 is
   fully synthetic, with simulated status and payment evidence in the
   documented formats, labelled `simulated` in the files themselves.
   No real invoice is used anywhere.
-- **Known open items:** the official `ucp-schema` tool run (see
-  `validation/VALIDATION.md`); a primary citation for the India
-  no-reinstatement rule (see `research/GATE1_REPORT.md`, flag 2).
+- **Gate 1 review closure (26 November 2026):** the official
+  `ucp-schema` tool was run by the lead — definition passed strict
+  lint, payloads pass strict validation as delivered (see
+  `validation/VALIDATION.md`); the India no-reinstatement rule is
+  pinned to GSTN's e-Invoice FAQ v1.4, question 91. Remaining Gate 2
+  items are the verifier, the conformance suite and the
+  production-shaped synthetic IRP case.
 - Deterministic conformance results (Gate 2) will be reported
   separately from the programme's model-review measurements, with
   their denominators, corrected figures and exploratory runs

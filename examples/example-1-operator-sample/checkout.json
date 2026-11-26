@@ -4,7 +4,8 @@
     "capabilities": {
       "dev.ucp.shopping.checkout": [
         {
-          "version": "2026-08-25"
+          "version": "2026-08-25",
+          "schema": "https://ucp.dev/2026-08-25/schemas/shopping/checkout.json"
         }
       ],
       "io.github.agorail-labs.shopping.invoice_reference": [

@@ -26,13 +26,27 @@ What this does
 What this is not
 ----------------
 This is not the Gate 2 verifier and not a conformance suite. The
-official ucp-schema Rust tool was not run: this environment has no
-cargo/rustc (checked 2026-11-26), so composition and strict checking
-are performed here following the tool's documented method (FAQ:
-extensions define additions in $defs[root capability name]; composition
-is allOf; --strict makes the contract closed). Running the official
-tool over these payloads is recorded as an open item in
+official ucp-schema Rust tool was not run by this harness (this
+environment has no cargo/rustc, checked 2026-11-26); composition and
+strict checking here follow the tool's documented method. The lead ran
+the official tool separately at Gate 1 review (ucp-schema v2.0.0,
+checksum-verified binary): the definition passed strict lint, and the
+payloads pass strict validation as delivered now that their base
+capability entries carry the published base schema URLs. See
 validation/VALIDATION.md.
+
+Trust and binding (Gate 1 review closure, 2026-11-26)
+-----------------------------------------------------
+Verification keys are loaded from validation/trust_keys and the
+expected payment identifier from validation/trust_config.json --
+verifier configuration held independently of the evidence bundles,
+never from an example's evidence folder. Capture evidence is matched
+against the accepted checkout (id, total, currency) and the expected
+payment id; the signed status response's registration identifier must
+equal the reference's; order.checkout_id is checked alongside snapshot
+equality. Mutated copies (capture currency + payment id; order
+checkout_id; status identifier) are run as regression cases and must
+fail those binding predicates.
 
 Requires: jsonschema, cryptography, rfc8785; network access to ucp.dev
 for the published base schemas.
@@ -214,8 +228,12 @@ def main() -> int:
               all("status" in r for r in refs if "registration" in r))
         check(f"{label}: order snapshot equals checkout reference (rule: order snapshot)",
               order["invoice_reference"] == checkout["invoice_reference"])
+        check(f"{label}: order checkout_id equals checkout id",
+              order["checkout_id"] == checkout["id"])
 
     verdicts = {}
+    trust = load_json(ROOT / "validation" / "trust_config.json")
+    trust_dir = ROOT / "validation"
 
     # ------------------------------------------------------------ Example 1
     ex1 = ROOT / "examples" / "example-1-operator-sample"
@@ -229,10 +247,12 @@ def main() -> int:
 
     artifact1 = (ex1 / "evidence" / "signed_qr_code.jwt.txt").read_text().strip()
     ref1 = c1["invoice_reference"][0]
-    check("example1: artifact digest matches reference",
+    check("example1: artifact digest matches reference (digest over the compact "
+          "JWS ASCII bytes; file's trailing newline is framing, not hashed)",
           "sha256:" + hashlib.sha256(artifact1.encode()).hexdigest()
           == ref1["registration"]["artifact_digest"])
-    pub1 = serialization.load_pem_public_key((ex1 / "evidence" / "irp_public_key.pem").read_bytes())
+    pub1 = serialization.load_pem_public_key(
+        (trust_dir / trust["example1"]["irp_public_key"]).read_bytes())
     h, p, s = artifact1.split(".")
     try:
         pub1.verify(b64u_decode(s), f"{h}.{p}".encode(), padding.PKCS1v15(), hashes.SHA256())
@@ -274,11 +294,12 @@ def main() -> int:
 
     ref2 = c2["invoice_reference"][0]
     artifact2 = (ex2 / "evidence" / "scheme_artifact.jwt.txt").read_text().strip()
-    check("example2: artifact digest matches reference",
+    check("example2: artifact digest matches reference (digest over the compact "
+          "JWS ASCII bytes; file's trailing newline is framing, not hashed)",
           "sha256:" + hashlib.sha256(artifact2.encode()).hexdigest()
           == ref2["registration"]["artifact_digest"])
     irp_pub = serialization.load_pem_public_key(
-        (ex2 / "evidence" / "simulated_irp_public_key.pem").read_bytes())
+        (trust_dir / trust["example2"]["irp_public_key"]).read_bytes())
 
     def verify_rs256(token: str) -> dict:
         hh, pp, ss = token.split(".")
@@ -311,10 +332,30 @@ def main() -> int:
         claims = {}
         check("example2: simulated status evidence signature verifies (RS256)", False)
     pay = load_json(ex2 / "evidence" / "payment_event.json")
-    check("example2: payment event is provider capture bound to checkout and payment id",
-          pay["status"] == "captured" and pay["checkout_id"] == c2["id"]
-          and bool(pay["payment_id"]) and pay["amount"]
-          == [t["amount"] for t in c2["totals"] if t["type"] == "total"][0])
+    expected_pid = trust["example2"]["expected_payment_id"]
+    checkout_total2 = [t["amount"] for t in c2["totals"] if t["type"] == "total"][0]
+
+    def capture_bound(p: dict) -> bool:
+        return (p.get("status") == "captured" and p.get("checkout_id") == c2["id"]
+                and p.get("payment_id") == expected_pid
+                and p.get("amount") == checkout_total2
+                and p.get("currency") == c2["currency"])
+
+    check("example2: payment event is provider capture bound to checkout, "
+          "expected payment id, amount and currency", capture_bound(pay))
+    check("example2: status evidence identifier equals reference registration identifier",
+          claims.get("registration_identifier") == ref2["registration"]["identifier"])
+
+    # Regression cases (lead's Gate 1 review, item 1): the lead's own
+    # mutations, kept. Each mutated copy must FAIL its binding predicate.
+    bad_pay = dict(pay, currency="USD", payment_id="pay_MUTATED_9999")
+    check("regression: capture with wrong currency and payment id is rejected",
+          not capture_bound(bad_pay))
+    check("regression: order with wrong checkout_id is rejected",
+          not (dict(o2, checkout_id="chk_MUTATED")["checkout_id"] == c2["id"]))
+    check("regression: status evidence for a different IRN is rejected",
+          not (dict(claims, registration_identifier="0" * 64).get("registration_identifier")
+               == ref2["registration"]["identifier"]))
     t_reg = dt(ref2["registration"]["registered_at"])
     t_pay = dt(pay["captured_at"])
     t_obs = dt(claims.get("observed_at", "1970-01-01T00:00:00+00:00"))
@@ -324,7 +365,7 @@ def main() -> int:
           and "not reinstated" in claims.get("scheme_rule", ""))
 
     # Merchant authorization: detached JWS, ES256, over JCS(checkout - ap2).
-    jwk = load_json(ex2 / "evidence" / "merchant_public_key.jwk.json")
+    jwk = load_json(trust_dir / trust["example2"]["merchant_public_key"])
     pubnums = ec.EllipticCurvePublicNumbers(
         int.from_bytes(b64u_decode(jwk["x"]), "big"),
         int.from_bytes(b64u_decode(jwk["y"]), "big"), ec.SECP256R1())

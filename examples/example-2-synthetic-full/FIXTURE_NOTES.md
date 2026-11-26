@@ -15,7 +15,15 @@ payment, or a real key.
   artifact (RS256 JWT, `iss: "SIMULATED-IRP"`) signed by a simulated
   IRP RSA key generated for this example. Unlike the QR artifact of
   Example 1 it carries `AckDt`, which supplies `registered_at`
-  (2026-11-20T10:15:23+05:30) at usable precision.
+  (2026-11-20T10:15:23+05:30) at usable precision. **Format
+  simplification, stated plainly:** here `AckDt` is a top-level
+  RFC 3339 timestamp with an offset. In the published IRP format,
+  AckDt sits inside the signed invoice's nested `data` object and
+  carries **no timezone offset** — so this example is fine as a
+  simulation but cannot validate the real IRP parser. Gate 2 adds a
+  production-shaped synthetic case in the published shape, ordered
+  under the documented Asia/Kolkata timezone (specification
+  sections 8.4 and 9, Annex A).
 - `evidence/status_evidence.json` is **simulated authenticated status
   evidence** in the documented Gate 1 format (specification
   section 7): claims signed as a compact JWS by the simulated IRP key —
@@ -32,6 +40,11 @@ payment, or a real key.
 - **All private keys were generated for this example and discarded.**
   Only public keys are included, so the signatures verify but cannot
   be re-made.
+- The harness does **not** verify with the keys in this folder: it
+  loads independently configured copies from
+  `validation/trust_keys/` (with the expected payment id in
+  `validation/trust_config.json`), because a key arriving inside the
+  evidence it is meant to check would prove nothing.
 
 The business's `status` claim in the reference says `active` as
 observed at 15:40 on 2026-11-20. Note that the claim is not what

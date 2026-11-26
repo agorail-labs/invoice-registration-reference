@@ -1,6 +1,10 @@
 # Example 1 — the operator's published signed sample
 
 **Evidence level:** the scheme's own published sample, and nothing else.
+**Scope of the verdict below:** this sample is a signed **documentation
+vector** — NIC's published example for verification, with dummy
+particulars — not a live registration. "Established" here means the
+reference matches that signed documentation vector, nothing more.
 
 ## What is operator-published here
 

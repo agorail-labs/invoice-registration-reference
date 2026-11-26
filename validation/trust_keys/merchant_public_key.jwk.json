@@ -1,0 +1,9 @@
+{
+  "kty": "EC",
+  "crv": "P-256",
+  "x": "SjreU3oFrfTYyaHC8FQPD2xl2jfy82-zLupZ7xTD2Jo",
+  "y": "4vr0pyeRfPYUUxOcsCTdTWwOKj9AKAP3GSLd_YvoEbw",
+  "kid": "merchant-simulated-key-1",
+  "use": "sig",
+  "alg": "ES256"
+}

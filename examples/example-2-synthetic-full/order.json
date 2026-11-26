@@ -4,7 +4,8 @@
     "capabilities": {
       "dev.ucp.shopping.order": [
         {
-          "version": "2026-08-25"
+          "version": "2026-08-25",
+          "schema": "https://ucp.dev/2026-08-25/schemas/shopping/order.json"
         }
       ],
       "io.github.agorail-labs.shopping.invoice_reference": [
@@ -82,7 +83,7 @@
       "registration": {
         "scheme": "in_gst_einvoice_irp",
         "identifier": "4d98959363b1b34d8f918b6688bcbb0abcf59d9982868507df158159d4202f3a",
-        "artifact_digest": "sha256:f2b4d0c11489533cf34d7476a0c33357076cc1b07cf419bf56181522da02e716",
+        "artifact_digest": "sha256:933a0accec06379f1699182a12cfef707209f85bfd753e06a2e2e2609a5be583",
         "registered_at": "2026-11-20T10:15:23+05:30"
       },
       "status": {

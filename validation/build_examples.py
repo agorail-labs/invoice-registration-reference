@@ -55,14 +55,32 @@ def sha256_tag(data: bytes) -> str:
     return "sha256:" + hashlib.sha256(data).hexdigest()
 
 
+# artifact_digest is defined over the ASCII bytes of the artifact's
+# compact JWS serialization itself (specification section 4, as tightened
+# at Gate 1 review). Files store the artifact with a trailing newline;
+# that newline is file framing, not part of the artifact, and is never
+# hashed. The builder hashes the stripped compact string, and the
+# harness does the same.
+
+
 def dump(path: pathlib.Path, obj) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + "\n")
 
 
+CHECKOUT_SCHEMA_URL = "https://ucp.dev/2026-08-25/schemas/shopping/checkout.json"
+ORDER_SCHEMA_URL = "https://ucp.dev/2026-08-25/schemas/shopping/order.json"
+TRUST_DIR = ROOT / "validation" / "trust_keys"
+
+
 def ucp_block(for_order: bool, with_ap2: bool) -> dict:
+    # Base capability entries carry the published base schema URLs. UCP
+    # responses may show version-only entries, but the official ucp-schema
+    # validator requires the schema URL in submitted payloads (lead's
+    # Gate 1 review, 2026-11-26). Because the AP2 merchant signature
+    # covers ucp metadata, Example 2 is re-signed after any change here.
     caps = {
-        "dev.ucp.shopping.checkout": [{"version": UCP_VERSION}],
+        "dev.ucp.shopping.checkout": [{"version": UCP_VERSION, "schema": CHECKOUT_SCHEMA_URL}],
         CAP_NAME: [{
             "version": CAP_VERSION,
             "extends": ["dev.ucp.shopping.checkout", "dev.ucp.shopping.order"],
@@ -72,7 +90,7 @@ def ucp_block(for_order: bool, with_ap2: bool) -> dict:
     }
     if for_order:
         caps = {
-            "dev.ucp.shopping.order": [{"version": UCP_VERSION}],
+            "dev.ucp.shopping.order": [{"version": UCP_VERSION, "schema": ORDER_SCHEMA_URL}],
             CAP_NAME: caps[CAP_NAME],
         }
     if with_ap2:
@@ -142,6 +160,11 @@ def build_example1() -> None:
         serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
     )
     (ev / "irp_public_key.pem").write_bytes(pem)
+    # Verifier trust configuration is independent of the evidence bundle:
+    # the harness loads keys from validation/trust_keys, never from an
+    # example's evidence folder (lead's Gate 1 review, item 1).
+    TRUST_DIR.mkdir(parents=True, exist_ok=True)
+    (TRUST_DIR / "nic_irp_public_key.pem").write_bytes(pem)
     dump(ev / "signed_qr_code.decoded.json", {"header": header, "payload": payload, "data": data})
 
     total_minor = int(data["TotInvVal"]) * 100  # QR TotInvVal is in rupees
@@ -229,6 +252,8 @@ def build_example2() -> None:
         serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
     )
     (ev / "simulated_irp_public_key.pem").write_bytes(irp_pub_pem)
+    TRUST_DIR.mkdir(parents=True, exist_ok=True)
+    (TRUST_DIR / "simulated_irp_public_key.pem").write_bytes(irp_pub_pem)
 
     def rs256_jwt(header: dict, payload: dict, key) -> str:
         signing_input = (
@@ -341,6 +366,7 @@ def build_example2() -> None:
         "alg": "ES256",
     }
     dump(ev / "merchant_public_key.jwk.json", jwk)
+    dump(TRUST_DIR / "merchant_public_key.jwk.json", jwk)
     canonical = rfc8785.dumps(checkout)
     header = {"alg": "ES256", "kid": "merchant-simulated-key-1"}
     signing_input = b64u(json.dumps(header, separators=(",", ":")).encode()) + "." + b64u(canonical)
@@ -381,6 +407,19 @@ def build_example2() -> None:
         "amount": total_minor,
         "currency": "INR",
         "captured_at": captured_at,
+    })
+
+    # Verifier configuration, held independently of the evidence bundle:
+    # which keys are trusted for which example, and the payment
+    # identifier the verifier expects for Example 2's checkout (from the
+    # payment integration, not from the capture evidence itself).
+    dump(ROOT / "validation" / "trust_config.json", {
+        "example1": {"irp_public_key": "trust_keys/nic_irp_public_key.pem"},
+        "example2": {
+            "irp_public_key": "trust_keys/simulated_irp_public_key.pem",
+            "merchant_public_key": "trust_keys/merchant_public_key.jwk.json",
+            "expected_payment_id": "pay_SIMULATED_0001",
+        },
     })
     print("example 2 written; IRN", irn)
 

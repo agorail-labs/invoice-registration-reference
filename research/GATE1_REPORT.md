@@ -132,17 +132,24 @@ claim, no new signature.
 
 ## Flags
 
-1. **The official `ucp-schema` tool was not run.** This environment has
-   no cargo/rustc (checked 26 November 2026), so the tool could not be
-   installed. Composition and strict checking were performed locally
-   following the tool's documented method; see
-   `validation/VALIDATION.md`. Running the official tool over the two
-   examples is an open item for the lead's decision.
-2. **The India no-reinstatement rule** (specification sections 8.2 and
-   9) rests on the Part B dossier: the 24-hour cancellation window is
-   from the authority's own text; the correction route (new document
-   with its own IRN, no amendment on the IRP) is marked secondary
-   there. A primary citation should be pinned at Gate 2.
+1. **The official `ucp-schema` tool — run by the lead at review.**
+   This build environment has no cargo/rustc (checked 26 November
+   2026), so the harness followed the tool's documented method
+   locally. The lead then ran the official tool (ucp-schema v2.0.0,
+   checksum-verified): the definition passed strict lint; the four
+   payloads were at first rejected because their base capability
+   entries omitted `schema` — a CLI input requirement, since UCP
+   shows version-only entries in responses — and all four passed
+   strict validation once the published base schema URLs were added.
+   The delivered fixtures now carry those URLs (Example 2's merchant
+   signature regenerated, since AP2 covers `ucp` metadata). Full
+   record: `validation/VALIDATION.md`.
+2. **The India no-reinstatement rule** (specification sections 8.2
+   and 9) rested on the Part B dossier, whose correction route was
+   marked secondary. **Pinned at review closure:** GSTN's e-Invoice
+   FAQ v1.4, question 91 — the invoice number of a cancelled IRN
+   cannot be reused to generate another IRN — is now cited in
+   specification section 9 as the primary source.
 3. **Authority binding is prospective.** The organisation serves no
    GitHub Pages site today (verified 26 November 2026 in the design
    read), so the capability's schema URL does not yet resolve. That is

@@ -73,7 +73,7 @@ own (rule 8).
 | Link | `line_item_id` | Identifies the one checkout line item this entry refers to. |
 | `document` | `number`, `type`, `issuer_tax_identity`, `issue_date`, `total` | The business's statement of the invoice, checked against scheme evidence. `total` is in INR minor units. |
 | `allocation` (optional) | `amount_applied`, `balance_before`, `balance_after`, `instalment_number` (optional) | **A declaration.** Its figures are the business's; the verifier checks only their internal arithmetic (rule 4). |
-| `registration` (optional) | `scheme`, `identifier`, `artifact_digest`, `registered_at` (optional) | `artifact_digest` is `sha256:` + the hex SHA-256 of the artifact's exact bytes as supplied in the evidence bundle. `registered_at` is present only where the scheme evidence supplies a registration time at usable precision. |
+| `registration` (optional) | `scheme`, `identifier`, `artifact_digest`, `registered_at` (optional) | `artifact_digest` is `sha256:` + the hex SHA-256 of **the ASCII bytes of the artifact's compact JWS serialization**. Storage framing is not part of the artifact: a trailing newline in a file holding the artifact is not hashed. The definition, the fixtures and the verifier all use this one representation. `registered_at` is present only where the scheme evidence supplies a registration time at usable precision. |
 | `status` | `value` (`active` / `cancelled` / `not_established`), `observed_at`, `cancelled_at` (where the claim is cancelled) | **A claim by the business.** Never evidence by itself. Required when a registration is present (rule 6). |
 
 **Raw scheme artifacts are not carried inline.** A signed invoice code
@@ -88,7 +88,8 @@ unchanged**. Later status evidence is stored beside the snapshot — in the
 evidence bundle, not in the order — and never overwrites it. The original
 signed checkout is preserved: the verifier compares the snapshot and the
 reference against the final checkout accepted for completion, even when
-the amount is unchanged (rule 7).
+the amount is unchanged (rule 7), and checks that the order's
+`checkout_id` is that checkout's id.
 
 ## 6. Rules
 
@@ -123,10 +124,21 @@ Where no trusted time for that event is supplied, the verifier returns
 A verifier takes three inputs: the final checkout, the order snapshot,
 and an **evidence bundle** holding
 
-- the scheme's signed artifact, with the keys to check it;
+- the scheme's signed artifact;
 - authenticated status evidence bound to the same registration
   identifier; and
 - evidence of the payment event.
+
+Two things are **verifier configuration, never taken from the bundle**:
+the trust keys (the scheme's key and the business's key are configured
+independently — a key that arrives inside the evidence it is meant to
+check proves nothing), and the payment identifier the verifier expects
+for the checkout's payment session, which comes from the payment
+integration. Capture evidence is matched against the accepted checkout:
+its id, the checkout total, the checkout currency, and that expected
+payment identifier. Status evidence counts only where the registration
+identifier inside the **signed** status response equals the reference's
+registration identifier.
 
 In version 0.1 the status and payment evidence are **simulated in a
 documented format, and labelled so**:
@@ -181,7 +193,8 @@ event and no cancellation took effect at or before it.
 
 - **Established** only when the AP2 mandate extension's merchant
   signature over the final checkout verifies **and** the order's snapshot
-  equals that checkout's reference.
+  equals that checkout's reference **and** the order's `checkout_id` is
+  that checkout's id.
 - Otherwise **not established** (a signature that fails to verify is a
   failed check on this verdict's input, reported in the reason; this
   specification does not make it "contradicted", because the verdict is
@@ -199,6 +212,12 @@ event and no cancellation took effect at or before it.
   conflict between two authenticated sources by preferring one silently.
 - The business's `status` claim never moves any verdict in either
   direction.
+- **Scheme timestamps without an offset.** The IRP's registration time
+  (AckDt) arrives with **no timezone offset** (section 9). An adapter
+  may use such a timestamp for event ordering only under a documented
+  timezone for the scheme — for the IRP, Asia/Kolkata — recorded with
+  the verifier's configuration. Where no timezone is documented, any
+  verdict depending on that ordering is **not established**.
 
 ## 9. Scheme profile: India (GST e-invoice / IRP)
 
@@ -214,16 +233,38 @@ From the scheme's published material, as read for this reference
   the IRN. It carries **no registration time and no timestamps** — so
   for a QR artifact, `registered_at` is omitted and "active at payment"
   cannot be established from the artifact alone. The signed invoice
-  response's AckDt does supply a registration time at usable precision.
+  response does carry a registration time, but in the published format
+  **AckDt sits inside the signed invoice's nested `data` object and
+  carries no timezone offset**; it is usable for ordering only under
+  the documented-timezone rule of section 8.4. (Example 2's simulated
+  artifact carries a top-level RFC 3339 `AckDt` instead — a simulation
+  simplification, recorded in its fixture notes; it does not exercise
+  the real IRP parser. A production-shaped synthetic case is a Gate 2
+  deliverable, Annex A.)
 - Anyone can check the signature offline against the published IRP
   public key; public web routes (Verify Signed Invoice, Search IRN)
   exist; API retrieval is login-only for the taxpayer/GSP.
 - The whole IRN can be cancelled within 24 hours (not with an active
   e-way bill). There is no amendment on the IRP: corrections go through
   GSTR-1 or a new credit/debit note with its own IRN. **A cancelled IRN
-  is not reinstated** — the rule section 8.2 relies on. Current status
-  is public via Search IRN; the signed QR carries no status field, so
-  the artifact alone never establishes status.
+  is not reinstated** — the rule section 8.2 relies on. Primary
+  citation: GSTN's *e-Invoice FAQ, version 1.4* (30 March 2021),
+  question 91 — "Can an invoice number of a cancelled IRN be used
+  again? No. Once an IRN is cancelled, the concerned invoice number
+  cannot be used again to generate another e-invoice/IRN (even within
+  the permitted cancellation window)", because the IRN is a unique
+  string of supplier GSTIN, document number, document type and
+  financial year: a cancelled registration cannot return under the
+  same identifier. Current status is public via Search IRN; the
+  signed QR carries no status field, so the artifact alone never
+  establishes status.
+- **Scope of Example 1's verdict.** NIC's published sample is a signed
+  **documentation vector** — an example printed for verification, with
+  dummy particulars, not a live registration. Example 1's "established"
+  verdict for *registration matches the invoice* is scoped accordingly:
+  the reference matches that signed documentation vector. Live
+  registration facts are what the synthetic example and the Gate 2
+  suite address.
 
 ## 10. UCP fit
 
@@ -253,4 +294,11 @@ at it. Cancelled after it. A valid signed artifact with only the
 business's status claim. Lookup failure. Authoritative absence. Status
 not established. Registration without a status. The same registration on
 two lines. Allocation that does not add up. A signed checkout whose
-reference changed while the price stayed the same.
+reference changed while the price stayed the same. **A production-shaped
+synthetic IRP case** — signed invoice in the published shape, AckDt
+nested in `data` with no offset, ordered under the documented
+Asia/Kolkata timezone — so the real IRP parser, not only the simulation
+format, is exercised. The Gate 1 harness's binding regressions (capture
+with a wrong currency and payment id; an order with a wrong
+`checkout_id`; status evidence for a different IRN) are carried into the
+suite as regression cases.

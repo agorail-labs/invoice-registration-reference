@@ -1,0 +1,10 @@
+{
+  "example1": {
+    "irp_public_key": "trust_keys/nic_irp_public_key.pem"
+  },
+  "example2": {
+    "irp_public_key": "trust_keys/simulated_irp_public_key.pem",
+    "merchant_public_key": "trust_keys/merchant_public_key.jwk.json",
+    "expected_payment_id": "pay_SIMULATED_0001"
+  }
+}

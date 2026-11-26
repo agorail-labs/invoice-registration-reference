@@ -92,8 +92,8 @@ separate decisions.
 Gate 3 approval is contingent on the exact candidate archive passing
 a clean run: fresh extraction, fresh virtual environment,
 dependencies from `verifier/requirements.txt`, the verifier suite
-(22 tests at RC1; 27 at RC2, which adds file-based end-to-end
-regressions for the four binding verdict cases) and the 36-check
-Gate 1 harness, all passing with no network access required. The
-runs and their results are recorded in `release/RC1_CLEAN_RUN.md`
-and `release/RC2_CLEAN_RUN.md`.
+(22 tests at RC1; 27 at RC2; 32 at RC3; 38 at RC4 — each candidate
+adds the review's reproduced verdict cases as failing-first tests)
+and the 36-check Gate 1 harness, all passing with no network access
+required. The runs and their results are recorded in
+`release/RC1_CLEAN_RUN.md` through `release/RC4_CLEAN_RUN.md`.

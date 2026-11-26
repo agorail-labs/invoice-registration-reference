@@ -29,7 +29,7 @@ changes the invoice-only total.
 - **The verifier is a reference implementation**
   (`verifier/invoice_reference_verifier.py`): it computes the three
   verdicts from inputs against independently configured trust, and
-  its 32-test suite passes (`conformance/CONFORMANCE.md`). Status and
+  its 38-test suite passes (`conformance/CONFORMANCE.md`). Status and
   payment evidence remain the documented **simulated** formats — no
   live scheme or provider channel is integrated in v0.1.
 - **Capture authentication.** The verifier's field matching (checkout
@@ -81,7 +81,7 @@ Requires Python 3.11+.
 
 ```sh
 pip install -r verifier/requirements.txt
-python3 -m unittest discover -s verifier/tests -v   # 32 tests
+python3 -m unittest discover -s verifier/tests -v   # 38 tests
 python3 validation/validate_gate1.py                # Gate 1 harness, 36 checks
 python3 verifier/invoice_reference_verifier.py      # verdicts for Examples 1-3
 ```

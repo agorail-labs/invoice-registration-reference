@@ -273,13 +273,20 @@ class ConformanceCases(unittest.TestCase):
         self.assertEqual(r2["verdicts"]["registration_active_at_payment"]["verdict"], N)
 
     def test_authoritative_absence_contradicts_matches(self):
+        # Construction unchanged from Gate 2 case 8, expectation
+        # SUPERSEDED by RC4 check 4 (lead's RC3 review): a verified
+        # matching invoice plus a verified authoritative absence for
+        # the same IRN is conflicting authenticated evidence ->
+        # not established, not contradicted. Absence WITHOUT a
+        # matching artifact still contradicts (RC4Blockers control).
         artifact = self.f.artifact()
         checkout, order = self.f.checkout_order(self.f.reference(artifact))
         bundle = {"artifact": artifact,
                   "status_evidence": self.f.status(status="not_found"),
                   "payment_event": self.f.capture()}
         r = self.run_case(checkout, order, bundle)
-        self.assertEqual(r["verdicts"]["registration_matches_invoice"]["verdict"], C)
+        self.assertEqual(r["verdicts"]["registration_matches_invoice"]["verdict"], N)
+        self.assertIn("conflict", r["verdicts"]["registration_matches_invoice"]["reason"])
         self.assertEqual(r["verdicts"]["registration_active_at_payment"]["verdict"], N)
 
     def test_status_not_established(self):
@@ -440,6 +447,102 @@ class RC3Blockers(unittest.TestCase):
         r = V.verify(checkout, order, bundle, f.config)
         self.assertEqual(verdicts(r)[self.M], E)
         self.assertEqual(verdicts(r)[self.A], E)
+
+
+class RC4Blockers(unittest.TestCase):
+    """The four additional checks from the RC3 review.
+
+    Each check FAILS on the RC3 verifier (commit 03efb7d) and passes
+    on RC4; the last test is the non-conflicting control for check 4.
+    """
+
+    M, A = "registration_matches_invoice", "registration_active_at_payment"
+
+    def _artifact_with_total(self, f, tot):
+        payload = {"iss": "SIMULATED-IRP", "AckNo": "SIMACK1",
+                   "AckDt": REG_AT, "Irn": f.irn,
+                   "data": {"SellerGstin": SELLER, "DocNo": f.doc_no,
+                            "DocTyp": "INV", "DocDt": "20/11/2026",
+                            "TotInvVal": tot, "ItemCnt": 1}}
+        return f.rs256(payload)
+
+    def test_amount_exact_paise_matches(self):
+        # Signed total Rs 118,000.25 == 11,800,025 paise exactly.
+        f = Factory()
+        artifact = self._artifact_with_total(f, 118000.25)
+        ref = f.reference(artifact)
+        ref[0]["document"]["total"] = 11800025
+        checkout, order = f.checkout_order(ref)
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], E)
+
+    def test_amount_truncated_paise_contradicts(self):
+        # The same signed total against a reference that drops the
+        # 25 paise is a verified mismatch: contradicted.
+        f = Factory()
+        artifact = self._artifact_with_total(f, 118000.25)
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], C)
+
+    def test_date_only_registration_time_unresolved(self):
+        # AckDt states only a date; the capture is on that date. At
+        # day precision the ordering is unresolved (spec 8.4):
+        # active must be not_established, not established by reading
+        # the date as midnight.
+        import dataclasses
+        f = Factory()
+        artifact = f.artifact(AckDt="2026-11-20")
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        cfg = dataclasses.replace(f.config, scheme_timezone="Asia/Kolkata")
+        r = V.verify(checkout, order, bundle, cfg)
+        self.assertEqual(verdicts(r)[self.M], E)
+        self.assertEqual(verdicts(r)[self.A], N)
+
+    def test_status_response_in_artifact_slot(self):
+        # A validly signed status response supplied AS the artifact:
+        # it carries no invoice or QR claims, so a match cannot be
+        # established from it.
+        f = Factory()
+        token = f.status()["jws"]
+        checkout, order = f.checkout_order(f.reference(token))
+        bundle = {"artifact": token, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], N)
+
+    def test_conflict_matching_invoice_and_authoritative_absence(self):
+        # A verified matching invoice AND a verified authoritative
+        # absence naming the same IRN: conflicting authenticated
+        # evidence -> not established, with the conflict reported
+        # (supersedes the RC2-era expectation of contradicted for
+        # this combined construction; absence alone still
+        # contradicts -- see the control below).
+        f = Factory()
+        artifact = f.artifact()
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact,
+                  "status_evidence": f.status(status="not_found"),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], N)
+        self.assertIn("conflict", r["verdicts"][self.M]["reason"])
+
+    def test_authoritative_absence_without_artifact_still_contradicts(self):
+        f = Factory()
+        artifact = f.artifact()
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": None,
+                  "status_evidence": f.status(status="not_found"),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], C)
 
 
 class FileRegressions(unittest.TestCase):

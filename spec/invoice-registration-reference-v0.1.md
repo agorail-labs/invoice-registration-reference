@@ -177,9 +177,21 @@ with a reason.
 
 - **Established** when the artifact's signature verifies and the
   identifier, supplier's tax identity, document number, type, issue date
-  and total match wherever the scheme's evidence binds them.
+  and total match wherever the scheme's evidence binds them. Amounts
+  compare exactly in minor units: a rupee amount converts to paise
+  exactly (₹118,000.25 is 11,800,025 paise); no rounding or truncation
+  is applied in either direction.
+- A match can be established only by an artifact carrying the scheme's
+  invoice or QR claims. A signed object of another kind in the
+  artifact's place — for example a status response — establishes
+  nothing, however valid its signature.
 - **Contradicted** by a verified mismatch, or by an authoritative
   negative response of known scope.
+- Where an authoritative negative response and a verified matching
+  artifact name the same registration, the two authenticated sources
+  conflict: the verdict is **not established**, with the conflict
+  reported (section 8.4). Absence without a matching artifact
+  contradicts as above.
 - A timeout, a refusal, a retention gap or a generic "not available" is
   **not established** — never contradicted.
 

@@ -30,8 +30,14 @@ test_nested_docdtls_number_mismatch_contradicted (test_verifier.RC3Blockers.test
 test_no_configured_expected_payment_id (test_verifier.RC3Blockers.test_no_configured_expected_payment_id) ... ok
 test_registered_at_supplied_only_by_checkout (test_verifier.RC3Blockers.test_registered_at_supplied_only_by_checkout) ... ok
 test_time_from_artifact_failing_digest_and_irn_binding (test_verifier.RC3Blockers.test_time_from_artifact_failing_digest_and_irn_binding) ... ok
+test_amount_exact_paise_matches (test_verifier.RC4Blockers.test_amount_exact_paise_matches) ... ok
+test_amount_truncated_paise_contradicts (test_verifier.RC4Blockers.test_amount_truncated_paise_contradicts) ... ok
+test_authoritative_absence_without_artifact_still_contradicts (test_verifier.RC4Blockers.test_authoritative_absence_without_artifact_still_contradicts) ... ok
+test_conflict_matching_invoice_and_authoritative_absence (test_verifier.RC4Blockers.test_conflict_matching_invoice_and_authoritative_absence) ... ok
+test_date_only_registration_time_unresolved (test_verifier.RC4Blockers.test_date_only_registration_time_unresolved) ... ok
+test_status_response_in_artifact_slot (test_verifier.RC4Blockers.test_status_response_in_artifact_slot) ... ok
 
 ----------------------------------------------------------------------
-Ran 32 tests in 1.547s
+Ran 38 tests in 2.464s
 
 OK

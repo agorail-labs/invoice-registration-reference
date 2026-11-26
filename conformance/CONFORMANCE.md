@@ -2,8 +2,8 @@
 
 **Verifier:** `verifier/invoice_reference_verifier.py` — computes the
 three verdicts from inputs; nothing is precomputed or fixed.
-**Suite:** `verifier/tests/test_verifier.py` (unittest, 32 tests).
-**Results:** all 32 tests pass; full output in
+**Suite:** `verifier/tests/test_verifier.py` (unittest, 38 tests).
+**Results:** all 38 tests pass; full output in
 `conformance/test-results.txt` (run 26 November 2026). The Gate 1
 harness still passes 36/36 (`validation/validation-results.txt`); its
 schema fetches now resolve against a pinned cache of the published
@@ -26,7 +26,7 @@ output.
 | 5 | Cancelled after it | §8.2 | `test_cancelled_after_payment` | active **established** |
 | 6 | Valid signed artifact with only the business's status claim | §4 (status is a claim), §8.2 | `test_valid_artifact_with_only_business_claim` | matches **established**; active **not established** |
 | 7 | Lookup failure | §8.1, §8.2 (a timeout is not evidence) | `test_lookup_failure_is_not_established_never_contradicted` | **not established**, never contradicted |
-| 8 | Authoritative absence | §8.1 | `test_authoritative_absence_contradicts_matches` | matches **contradicted**; active not established |
+| 8 | Authoritative absence | §8.1 | `test_authoritative_absence_contradicts_matches` (expectation superseded at RC4 — see RC4 check 4); `test_authoritative_absence_without_artifact_still_contradicts` | absence alone: matches **contradicted**; absence + verified matching artifact: **not established** (conflict) |
 | 9 | Status not established | Rule 6, §8.2 | `test_status_not_established` | active **not established**; matches established |
 | 10 | Registration without a status | Rule 6 | `test_registration_without_status_is_invalid` | definition rejects the entry; adding `not_established` status validates |
 | 11 | The same registration on two lines | Rule 1 | `test_same_registration_on_two_lines` | input **invalid** (rule 1 violation reported) |
@@ -78,6 +78,25 @@ existing 27 tests were kept and still pass.
 
 Tests: `RC3Blockers` in `verifier/tests/test_verifier.py` (5 tests:
 the four blockers plus the blocker-4 positive control).
+
+## RC4 additional checks (fixed in RC4)
+
+Four more incorrect verdicts reproduced against RC3 (commit
+03efb7d). Each test **fails on 03efb7d and passes on RC4**; the
+existing 32 tests were kept (one expectation superseded, noted in
+the case-8 row above).
+
+| # | Case (as reproduced) | RC3 returned | Required / RC4 | Fix |
+| --- | --- | --- | --- | --- |
+| 1a | Signed total ₹118,000.25, reference total exact (11,800,025 paise) | matches **contradicted** | **established** | Rupee→paise conversion is exact (Decimal over the string form); `int()` truncation removed |
+| 1b | Same signed total, reference drops the 25 paise | matches **established** | **contradicted** | (same fix, other direction) |
+| 2 | Registration time states only a date; capture on that date | active **established** | **not established** | Date-only AckDt is day precision: ordering unresolved per §8.4; the verifier no longer reads it as midnight |
+| 3 | Validly signed status response supplied in the artifact slot | matches **established** | **not established** | A match requires recognizable invoice or QR claims in the artifact (spec §8.1) |
+| 4 | Verified matching invoice + verified authoritative absence, same IRN | matches **contradicted** | **not established**, conflict reported | Absence is evaluated with the artifact evidence: absence alone contradicts; absence + matching artifact is a §8.4 conflict. Control: absence without an artifact still contradicts |
+
+Tests: `RC4Blockers` in `verifier/tests/test_verifier.py` (6 tests:
+both amount cases, precision, artifact slot, conflict, and the
+absence-alone control).
 
 ## Notes
 

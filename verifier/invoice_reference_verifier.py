@@ -58,8 +58,10 @@ import base64
 import hashlib
 import json
 import pathlib
+import re
 from dataclasses import dataclass, replace
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from zoneinfo import ZoneInfo
 
 import rfc8785
@@ -266,17 +268,47 @@ def _aggregate(results: list) -> dict:
     return results[0]
 
 
+def rupees_to_minor(value):
+    """Convert a rupee amount to minor units EXACTLY (RC4 check 1).
+
+    int() truncation dropped paise: Rs 118,000.25 became 11,800,000
+    instead of 11,800,025, contradicting the exact amount and
+    establishing the truncated one. Decimal over the value's string
+    form is exact; a value with sub-paise precision converts to None
+    (it cannot equal any minor-unit total)."""
+    try:
+        minor = Decimal(str(value)) * 100
+    except (InvalidOperation, ValueError):
+        return None
+    if minor != minor.to_integral_value():
+        return None
+    return int(minor)
+
+
+_DATE_ONLY = re.compile(r"^(\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4})$")
+
+
+def is_date_only(value) -> bool:
+    """True when a timestamp string states only a date (day precision)."""
+    return isinstance(value, str) and bool(_DATE_ONLY.match(value.strip()))
+
+
 def _matches(ref: dict, bundle: dict, status_claims, config: VerifierConfig) -> dict:
     reg = ref.get("registration")
     if not reg:
         return _verdict(NOT_ESTABLISHED, "no registration in this reference entry")
-    if status_claims and status_claims.get("status") == "not_found" \
-            and status_claims.get("registration_identifier") == reg["identifier"]:
-        return _verdict(CONTRADICTED,
-                        "authoritative negative response of known scope: the scheme "
-                        "reports no such registration")
+    # Authoritative absence, evaluated WITH the artifact evidence
+    # rather than before it (RC4 check 4): absence alone contradicts,
+    # but absence alongside a verified matching invoice is a conflict
+    # of authenticated evidence -> not established, conflict reported.
+    absence = bool(status_claims) and status_claims.get("status") == "not_found" \
+        and status_claims.get("registration_identifier") == reg["identifier"]
     artifact = bundle.get("artifact")
     if not artifact:
+        if absence:
+            return _verdict(CONTRADICTED,
+                            "authoritative negative response of known scope: the scheme "
+                            "reports no such registration")
         outcome = bundle.get("lookup_outcome")
         if outcome:
             return _verdict(NOT_ESTABLISHED,
@@ -292,6 +324,15 @@ def _matches(ref: dict, bundle: dict, status_claims, config: VerifierConfig) -> 
         return _verdict(NOT_ESTABLISHED,
                         "artifact signature does not verify under the configured scheme key")
     f = artifact_fields(payload)
+    # RC4 check 3: a match can only be established by an artifact that
+    # carries recognizable invoice or QR claims. A validly signed
+    # status response supplied in the artifact slot binds none of
+    # them, and previously established a match by default.
+    if not any(f.get(k) is not None
+               for k in ("DocNo", "DocTyp", "SellerGstin", "TotInvVal", "Irn")):
+        return _verdict(NOT_ESTABLISHED,
+                        "supplied artifact carries no recognizable invoice or "
+                        "QR claims; a match cannot be established from it")
     doc = ref["document"]
     mismatches = []
     def cmp_field(name, artifact_value, ref_value):
@@ -303,11 +344,17 @@ def _matches(ref: dict, bundle: dict, status_claims, config: VerifierConfig) -> 
     doc_dt, _ = parse_time(f.get("DocDt")) if f.get("DocDt") else (None, False)
     if doc_dt is not None and doc_dt.date().isoformat() != doc["issue_date"]:
         mismatches.append(f"issue date: artifact {f.get('DocDt')!r} != reference {doc['issue_date']!r}")
-    if f.get("TotInvVal") is not None and int(f["TotInvVal"]) * 100 != doc["total"]:
+    if f.get("TotInvVal") is not None and rupees_to_minor(f["TotInvVal"]) != doc["total"]:
         mismatches.append(f"total: artifact {f['TotInvVal']!r} (rupees) != reference {doc['total']!r} (minor units)")
     cmp_field("registration identifier", f.get("Irn"), reg["identifier"])
     if mismatches:
         return _verdict(CONTRADICTED, "verified mismatch -- " + "; ".join(mismatches))
+    if absence:
+        return _verdict(NOT_ESTABLISHED,
+                        "conflicting authenticated evidence: the verified artifact "
+                        "establishes this registration and an authoritative response "
+                        "reports no such registration for the same identifier; the "
+                        "conflict is reported and neither side is preferred")
     return _verdict(ESTABLISHED,
                     "artifact signature verifies and every field the artifact binds matches")
 
@@ -373,6 +420,15 @@ def _active(ref: dict, checkout: dict, bundle: dict, status_claims, status_note,
                             "identifier; its timestamps are not evidence for "
                             "this reference")
         if fields.get("AckDt"):
+            if is_date_only(fields["AckDt"]):
+                # RC4 check 2 / spec 8.4: a date-only registration
+                # time cannot be ordered against a payment event on
+                # that date; reading it as midnight invents precision
+                # the evidence does not state.
+                return _verdict(NOT_ESTABLISHED,
+                                "registration time (AckDt) is stated only at day "
+                                "precision, so its ordering against the payment "
+                                "event is unresolved (spec section 8.4)")
             reg_time = aware_time(fields["AckDt"], config)
             if reg_time is None:
                 return _verdict(NOT_ESTABLISHED,

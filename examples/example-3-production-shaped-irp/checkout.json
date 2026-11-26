@@ -89,7 +89,7 @@
       "registration": {
         "scheme": "in_gst_einvoice_irp",
         "identifier": "74e9ac7e9f35b8a5947b9cf8e678390413a3f198635f9b388580b1a3e987b325",
-        "artifact_digest": "sha256:95bb715a47740709ee512c2107b4987a7053ff2c5f0ba64bae3dd6b01727e251",
+        "artifact_digest": "sha256:f39e2f8d2f7aef246bba729402202a98a37ee405bc170a75d3244c2f0beb1db4",
         "registered_at": "2026-11-20T10:15:23+05:30"
       },
       "status": {
@@ -99,6 +99,6 @@
     }
   ],
   "ap2": {
-    "merchant_authorization": "eyJhbGciOiJFUzI1NiIsImtpZCI6Im1lcmNoYW50LXNpbXVsYXRlZC1rZXktMyJ9..yMBmvs5DL6sSZCDfwQ0cbb3zMxxPx2XCeQQc6zuErag81Uke_UfiUCsaDSMN8YsZez5ouuS83QVRAKJBYvH90w"
+    "merchant_authorization": "eyJhbGciOiJFUzI1NiIsImtpZCI6Im1lcmNoYW50LXNpbXVsYXRlZC1rZXktMyJ9..4GbMXCDq9aVgkzJ38_wb9zkBAlv5isvZlF7XAV9WtI0tN2r9YhCR73DoBMJEM-xorAe-5Z2NuCuBgdFjZ7M9gw"
   }
 }

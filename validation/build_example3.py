@@ -5,7 +5,8 @@ Example 2's simulated artifact carries a top-level RFC 3339 AckDt -- a
 simulation simplification. This fixture is shaped like the published IRP
 signed invoice instead: the payload's `data` is a nested object holding
 the invoice fields together with AckNo and AckDt, and AckDt is in the
-IRP's own format ("20/11/2026 10:15:23 AM") with NO timezone offset.
+IRP's documented format ("2026-11-20 10:15:23", yyyy-MM-dd HH:mm:ss)
+with NO timezone offset.
 The verifier may use it for event ordering only under the documented
 scheme timezone held in its configuration (Asia/Kolkata); the test
 suite runs this fixture with and without that configuration.
@@ -61,7 +62,16 @@ def main() -> None:
     total_major = 118000
     total_minor = total_major * 100
     irn = hashlib.sha256((seller_gstin + fy + doc_typ + doc_no).encode()).hexdigest()
-    ack_dt_irp = "20/11/2026 10:15:23 AM"          # IRP format, no offset
+    # AckDt in the IRP's documented format, yyyy-MM-dd HH:mm:ss, with
+    # no timezone offset: NIC's Generate IRN specification gives
+    # AckDt as `yyyy-MM-dd HH:mm:ss`, and ClearTax's published IRP
+    # response example shows "AckDt": "2023-10-26 14:28:00"
+    # (docs.cleartax.in, Cancel IRN sample govt_response; read
+    # 2026-11-26). An earlier build of this fixture used a
+    # dd/MM/yyyy AM/PM rendering, which is NOT a documented IRP
+    # format; the Gate 2 review caught it and the fixture now proves
+    # the documented form.
+    ack_dt_irp = "2026-11-20 10:15:23"
     registered_at = "2026-11-20T10:15:23+05:30"    # under Asia/Kolkata
     captured_at = "2026-11-20T15:42:10+05:30"
     status_observed_at = "2026-11-21T09:00:00+05:30"

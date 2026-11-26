@@ -47,6 +47,12 @@ contradicted.
 Scope is v0.1: scheme in_gst_einvoice_irp, simulated status/payment
 formats. This module is the reference verifier, not a production
 service.
+
+Capture authentication: the field matching in this module (checkout
+id, expected payment id, amount, currency) BINDS capture evidence to
+the transaction; it does not AUTHENTICATE it. A live verdict requires
+capture evidence authenticated by the caller's payment integration.
+The simulated capture format is unauthenticated by construction.
 """
 import base64
 import hashlib
@@ -83,8 +89,15 @@ def b64u_decode(s: str) -> bytes:
 def parse_time(value):
     """Parse a timestamp. Returns (datetime, had_offset) or (None, False).
 
-    Accepts RFC 3339 and the IRP's own formats ("20/11/2026 10:15:23 AM",
-    "20/11/2026 10:15:23"), which carry no offset.
+    Accepted forms: RFC 3339 (the reference's own timestamps and the
+    simulated formats); the IRP's documented AckDt format
+    "yyyy-MM-dd HH:mm:ss" (e.g. "2026-11-20 10:15:23" -- NIC's
+    Generate IRN specification; ClearTax's published IRP response
+    example shows "2023-10-26 14:28:00"), which carries no offset; and
+    the IRP's dd/MM/yyyy date forms. A dd/MM/yyyy hh:mm:ss AM/PM
+    rendering is also tolerated by the strptime fallbacks below, but
+    it is NOT a documented IRP format and no claim in this repository
+    rests on it.
     """
     if not value or not isinstance(value, str):
         return None, False

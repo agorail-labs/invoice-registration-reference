@@ -140,6 +140,16 @@ payment identifier. Status evidence counts only where the registration
 identifier inside the **signed** status response equals the reference's
 registration identifier.
 
+**Field matching binds; it does not authenticate.** Matching a
+capture's checkout id, payment id, amount and currency to the accepted
+checkout ties that evidence to this transaction — it says nothing
+about whether the capture evidence is genuine. A live verdict
+therefore requires capture evidence **authenticated by the caller's
+payment integration** (the provider's own authenticated channel). The
+simulated capture format of this version is unauthenticated by
+construction: it exercises the verdict logic offline, and no live
+claim rests on it.
+
 In version 0.1 the status and payment evidence are **simulated in a
 documented format, and labelled so**:
 
@@ -236,13 +246,18 @@ From the scheme's published material, as read for this reference
   for a QR artifact, `registered_at` is omitted and "active at payment"
   cannot be established from the artifact alone. The signed invoice
   response does carry a registration time, but in the published format
-  **AckDt sits inside the signed invoice's nested `data` object and
-  carries no timezone offset**; it is usable for ordering only under
-  the documented-timezone rule of section 8.4. (Example 2's simulated
-  artifact carries a top-level RFC 3339 `AckDt` instead — a simulation
+  **AckDt sits inside the signed invoice's nested `data` object, in
+  the IRP's documented format `yyyy-MM-dd HH:mm:ss`, and carries no
+  timezone offset**; it is usable for ordering only under the
+  documented-timezone rule of section 8.4. Format sources: NIC's
+  Generate IRN specification gives AckDt as `yyyy-MM-dd HH:mm:ss`,
+  and ClearTax's published IRP response example shows `"AckDt":
+  "2023-10-26 14:28:00"` (docs.cleartax.in, Cancel IRN sample
+  `govt_response`; both read 26 November 2026). Example 3 is built in
+  exactly this shape and format. (Example 2's simulated artifact
+  carries a top-level RFC 3339 `AckDt` instead — a simulation
   simplification, recorded in its fixture notes; it does not exercise
-  the real IRP parser. A production-shaped synthetic case is a Gate 2
-  deliverable, Annex A.)
+  the real IRP parser.)
 - Anyone can check the signature offline against the published IRP
   public key; public web routes (Verify Signed Invoice, Search IRN)
   exist; API retrieval is login-only for the taxpayer/GSP.

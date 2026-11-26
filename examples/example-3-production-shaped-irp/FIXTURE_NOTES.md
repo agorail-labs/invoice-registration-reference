@@ -14,8 +14,15 @@ the published IRP signed invoice:
   invoice fields (SellerGstin, BuyerGstin, DocNo, DocTyp, DocDt,
   TotInvVal, ItemCnt, MainHsnCode) **and** the acknowledgement —
   AckNo, **AckDt** and Irn — inside it.
-- `AckDt` is `"20/11/2026 10:15:23 AM"`: the IRP's own format, with
-  **no timezone offset**.
+- `AckDt` is `"2026-11-20 10:15:23"`: the IRP's documented format,
+  **yyyy-MM-dd HH:mm:ss, with no timezone offset** — NIC's Generate
+  IRN specification gives AckDt in that format, and ClearTax's
+  published IRP response example shows `"AckDt": "2023-10-26
+  14:28:00"` (docs.cleartax.in, Cancel IRN sample `govt_response`;
+  both read 26 November 2026). An earlier build of this fixture used
+  a dd/MM/yyyy AM/PM rendering, which is not a documented IRP format;
+  the Gate 2 review caught it, and the fixture now proves the
+  documented form.
 - The reference's `registered_at` (`2026-11-20T10:15:23+05:30`) is
   that AckDt read under **Asia/Kolkata**, the scheme's documented
   timezone, held in the verifier's configuration

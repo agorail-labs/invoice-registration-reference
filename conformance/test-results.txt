@@ -22,6 +22,6 @@ test_capture_payment_id_mutation_active_not_established (test_verifier.LeadMutat
 test_order_checkout_id_mutation_signed_not_established (test_verifier.LeadMutationsOnExample2.test_order_checkout_id_mutation_signed_not_established) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 1.107s
+Ran 22 tests in 1.382s
 
 OK

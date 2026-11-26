@@ -25,6 +25,12 @@ changes the invoice-only total.
   its 22-test suite passes (`conformance/CONFORMANCE.md`). Status and
   payment evidence remain the documented **simulated** formats — no
   live scheme or provider channel is integrated in v0.1.
+- **Capture authentication.** The verifier's field matching (checkout
+  id, expected payment id, amount, currency) *binds* capture evidence
+  to the transaction; it does not *authenticate* it. A live verdict
+  requires capture evidence authenticated by the caller's payment
+  integration. The simulated capture format is unauthenticated by
+  construction.
 - **Evidence levels — read this before trusting any claim.**
   Example 1 rests on the scheme operator's published sample — a
   signed **documentation vector**, not a live registration (signature
@@ -61,6 +67,21 @@ changes the invoice-only total.
 - `validation/` — Gate 1 validation harness, method and results;
   example builders; independently configured trust keys and the
   pinned cache of the published UCP schemas
+
+## Running the verifier and tests
+
+Requires Python 3.11+.
+
+```sh
+pip install -r verifier/requirements.txt
+python3 -m unittest discover -s verifier/tests -v   # 22 tests
+python3 validation/validate_gate1.py                # Gate 1 harness, 36 checks
+python3 verifier/invoice_reference_verifier.py      # verdicts for Examples 1-3
+```
+
+The Gate 1 harness resolves the published UCP schemas from the
+pinned cache in `validation/schema_cache/` (see
+`THIRD_PARTY_NOTICES.md`), so a clean run needs no network access.
 
 ## The central demonstration
 

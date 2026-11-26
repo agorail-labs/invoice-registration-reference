@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:02.349
+An AI agent is told: pay this invoice.
+
+2
+00:00:02.349 --> 00:00:06.305
+In a UCP checkout, paying is easy. Proving what was paid is not.
+
+3
+00:00:06.305 --> 00:00:09.829
+Was the invoice really registered with the tax authority?
+
+4
+00:00:09.829 --> 00:00:13.291
+Was that registration still active when the money moved?
+
+5
+00:00:13.291 --> 00:00:15.763
+And did the business sign this checkout?
+
+6
+00:00:15.763 --> 00:00:25.695
+The Invoice Registration Reference adds one capability to checkout and order: a reference to the invoice and its registration, checkable against the scheme's own signed evidence.
+
+7
+00:00:25.695 --> 00:00:32.111
+Run the verifier on a complete synthetic case, and all three questions come back established, each with its reason.
+
+8
+00:00:32.111 --> 00:00:36.463
+Now the real thing: the tax authority's own published, signed sample.
+
+9
+00:00:36.463 --> 00:00:40.184
+The verifier confirms the registration matches the invoice.
+
+10
+00:00:40.184 --> 00:00:45.798
+But the sample carries no payment evidence, so was it active at payment? Not established.
+
+11
+00:00:45.798 --> 00:00:49.330
+The verifier says what the evidence proves, and no more.
+
+12
+00:00:49.330 --> 00:00:52.514
+And when the evidence turns, so does the verdict.
+
+13
+00:00:52.514 --> 00:00:58.624
+Same case, but the signed status says the registration was cancelled before the payment event.
+
+14
+00:00:58.624 --> 00:01:03.499
+Active at payment: contradicted, with the cancellation named as the reason.
+
+15
+00:01:03.499 --> 00:01:08.243
+Three verdicts, three values: established, not established, contradicted.
+
+16
+00:01:08.243 --> 00:01:11.472
+Read the specification, and run the verifier yourself.
+
+17
+00:01:11.472 --> 00:01:15.359
+The repository is public, and the schema is live on GitHub Pages.
+
+18
+00:01:15.359 --> 00:01:20.083
+Experimental research software: nothing filed, no package, no production claim.

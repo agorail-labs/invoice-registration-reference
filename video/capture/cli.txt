@@ -1,0 +1,42 @@
+example-1-operator-sample {
+  "registration_matches_invoice": {
+    "verdict": "established",
+    "reason": "artifact signature verifies and every field the artifact binds matches"
+  },
+  "registration_active_at_payment": {
+    "verdict": "not_established",
+    "reason": "no payment-event evidence supplied"
+  },
+  "signed_by_checkout_business": {
+    "verdict": "not_established",
+    "reason": "the checkout carries no AP2 merchant authorization"
+  }
+}
+example-2-synthetic-full {
+  "registration_matches_invoice": {
+    "verdict": "established",
+    "reason": "artifact signature verifies and every field the artifact binds matches"
+  },
+  "registration_active_at_payment": {
+    "verdict": "established",
+    "reason": "registration time is at or before the payment event, an authenticated active observation at or after it is present, and the scheme's documented rule is that a cancelled registration cannot be reinstated"
+  },
+  "signed_by_checkout_business": {
+    "verdict": "established",
+    "reason": "merchant signature verifies over the final checkout, the order's snapshot equals its reference, and the order names that checkout"
+  }
+}
+example-3-production-shaped-irp {
+  "registration_matches_invoice": {
+    "verdict": "established",
+    "reason": "artifact signature verifies and every field the artifact binds matches"
+  },
+  "registration_active_at_payment": {
+    "verdict": "established",
+    "reason": "registration time is at or before the payment event, an authenticated active observation at or after it is present, and the scheme's documented rule is that a cancelled registration cannot be reinstated"
+  },
+  "signed_by_checkout_business": {
+    "verdict": "established",
+    "reason": "merchant signature verifies over the final checkout, the order's snapshot equals its reference, and the order names that checkout"
+  }
+}

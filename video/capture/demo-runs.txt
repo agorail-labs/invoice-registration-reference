@@ -1,0 +1,26 @@
+== Example 2 - synthetic full evidence (examples/example-2-synthetic-full)
+   structurally valid: True
+   registration matches invoice       established
+                                      (artifact signature verifies and every field the artifact binds matches)
+   registration active at payment     established
+                                      (registration time is at or before the payment event, an authenticated active observation at or after it is present, and the scheme's documented rule is that a cancelled registration cannot be reinstated)
+   signed by checkout business        established
+                                      (merchant signature verifies over the final checkout, the order's snapshot equals its reference, and the order names that checkout)
+
+== Example 1 - NIC's published signed sample (examples/example-1-operator-sample)
+   structurally valid: True
+   registration matches invoice       established
+                                      (artifact signature verifies and every field the artifact binds matches)
+   registration active at payment     not_established
+                                      (no payment-event evidence supplied)
+   signed by checkout business        not_established
+                                      (the checkout carries no AP2 merchant authorization)
+
+== Same case, signed status: cancelled before the payment event
+   structurally valid: True
+   registration matches invoice       established
+                                      (artifact signature verifies and every field the artifact binds matches)
+   registration active at payment     contradicted
+                                      (authenticated cancellation took effect at or before the payment event)
+   signed by checkout business        established
+                                      (merchant signature verifies over the final checkout, the order's snapshot equals its reference, and the order names that checkout)

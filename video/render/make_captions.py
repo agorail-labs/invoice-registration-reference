@@ -16,7 +16,7 @@ SEGMENTS = [
             "But the sample carries no payment evidence, so was it active at payment? Not established.",
             "The verifier says what the evidence proves, and no more."]),
     ("s4", ["And when the evidence turns, so does the verdict.",
-            "Same case, but the signed status says the registration was cancelled before the payment event.",
+            "In a separate synthetic test, the signed status says the registration was cancelled before the payment event.",
             "Active at payment: contradicted, with the cancellation named as the reason.",
             "Three verdicts, three values: established, not established, contradicted."]),
     ("s5", ["Read the specification, and run the verifier yourself.",

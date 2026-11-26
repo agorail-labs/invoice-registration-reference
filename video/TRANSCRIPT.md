@@ -1,6 +1,6 @@
 # Narration transcript — "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
 
-Full video: `dist/irr-demo.mp4` (80.17 s, 1920×1080, narrated).
+Full video: `dist/irr-demo.mp4` (80.35 s, 1920×1080, narrated).
 Voice: synthesized (Helio), English. Captions: `dist/captions.vtt`
 (18 cues, timed from the actual segment durations).
 
@@ -28,9 +28,9 @@ established. The verifier says what the evidence proves, and no more.
 
 ## S4 — When the evidence turns
 
-And when the evidence turns, so does the verdict. Same case, but the
-signed status says the registration was cancelled before the payment
-event. Active at payment: contradicted, with the cancellation named
+And when the evidence turns, so does the verdict. In a separate
+synthetic test, the signed status says the registration was cancelled
+before the payment event. Active at payment: contradicted, with the cancellation named
 as the reason. Three verdicts, three values: established, not
 established, contradicted.
 

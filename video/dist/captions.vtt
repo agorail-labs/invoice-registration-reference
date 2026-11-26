@@ -45,29 +45,29 @@ But the sample carries no payment evidence, so was it active at payment? Not est
 The verifier says what the evidence proves, and no more.
 
 12
-00:00:49.330 --> 00:00:52.514
+00:00:49.330 --> 00:00:52.388
 And when the evidence turns, so does the verdict.
 
 13
-00:00:52.514 --> 00:00:58.624
-Same case, but the signed status says the registration was cancelled before the payment event.
+00:00:52.388 --> 00:00:59.192
+In a separate synthetic test, the signed status says the registration was cancelled before the payment event.
 
 14
-00:00:58.624 --> 00:01:03.499
+00:00:59.192 --> 00:01:03.874
 Active at payment: contradicted, with the cancellation named as the reason.
 
 15
-00:01:03.499 --> 00:01:08.243
+00:01:03.874 --> 00:01:08.430
 Three verdicts, three values: established, not established, contradicted.
 
 16
-00:01:08.243 --> 00:01:11.472
+00:01:08.430 --> 00:01:11.659
 Read the specification, and run the verifier yourself.
 
 17
-00:01:11.472 --> 00:01:15.359
+00:01:11.659 --> 00:01:15.546
 The repository is public, and the schema is live on GitHub Pages.
 
 18
-00:01:15.359 --> 00:01:20.083
+00:01:15.546 --> 00:01:20.270
 Experimental research software: nothing filed, no package, no production claim.

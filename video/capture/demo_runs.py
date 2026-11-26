@@ -1,11 +1,19 @@
 """Demo driver for the IRR video: real verifier runs, printed plainly.
-Uses only the shipped verifier (src/verifier) and the shipped test
-Factory for the cancelled-before-payment construction."""
+Uses only the shipped verifier and the shipped test Factory for the
+cancelled-before-payment construction.
+
+Layout: run from a checkout of the public repository (the driver
+resolves the checkout root two levels above video/capture/), or from
+the build workspace, where the same tree extracted from commit
+217b5bb lives in src/ next to capture/."""
 import importlib.util
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent / "src"
+_HERE = Path(__file__).resolve()
+_CANDIDATES = [_HERE.parents[2], _HERE.parent.parent / "src"]
+ROOT = next(p for p in _CANDIDATES
+            if (p / "verifier" / "invoice_reference_verifier.py").exists())
 sys.path.insert(0, str(ROOT))
 
 from verifier.invoice_reference_verifier import verify_example, verify  # noqa: E402
@@ -40,5 +48,5 @@ checkout, order, bundle = f.genuine()
 bundle["status_evidence"] = f.status(
     status="cancelled", observed_at="2026-11-20T12:00:00+05:30",
     cancelled_at="2026-11-20T12:00:00+05:30")
-show("Same case, signed status: cancelled before the payment event",
+show("Separate synthetic test, signed status: cancelled before the payment event",
      verify(checkout, order, bundle, f.config))

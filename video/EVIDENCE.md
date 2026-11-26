@@ -1,9 +1,9 @@
 # Technical evidence — IRR demo video
 
 **Video:** "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
-**Rendered:** 2026-11-26 (IST) · **Final runtime:** 80.17 s, 1920×1080, 30 fps.
-**Deliverables:** `dist/irr-demo.mp4` (sha256 b9ebc098801734c7…),
-`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 4632d50742918834…),
+**Rendered:** 2026-11-26 (IST) · **Final runtime:** 80.35 s, 1920×1080, 30 fps.
+**Deliverables:** `dist/irr-demo.mp4` (sha256 83e138e431411496…),
+`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 f822f0e06fd12bd1…),
 `dist/captions.vtt` (18 cues), `dist/poster.png`.
 
 ## What was actually run
@@ -19,6 +19,12 @@ python3 -m verifier.invoice_reference_verifier   # capture/cli.txt
 python3 capture/demo_runs.py                      # capture/demo-runs.txt
 ```
 
+The driver resolves its source tree itself: from a checkout of this
+repository it uses the checkout root (two levels above
+`video/capture/`); in the build workspace it uses the `src/` tree
+extracted from commit `217b5bb` (`git archive 217b5bb`). No other
+setup is needed beyond the verifier's requirements.
+
 `capture/demo_runs.py` prints, through the shipped verifier:
 
 - **Example 2** (file example, synthetic full evidence): all three
@@ -27,7 +33,7 @@ python3 capture/demo_runs.py                      # capture/demo-runs.txt
   matches established; active at payment not established ("no
   payment-event evidence supplied"); signed not established ("the
   checkout carries no AP2 merchant authorization").
-- **Cancelled before payment:** the shipped test suite's `Factory`
+- **Cancelled before payment (separate synthetic test):** the shipped test suite's `Factory`
   construction (fresh keys, validly signed status reporting a
   cancellation at 2026-11-20T12:00:00+05:30, before the case's payment
   event) run through the same `verify()`: active at payment
@@ -42,7 +48,7 @@ alignment is preserved from the capture.
 
 - Narration: synthesized per scene (`audio/s1..s5.mp3`, voice Helio /
   avocado_v2:MAI_03), trailing silence trimmed at −45 dB. Measured
-  durations: s1 15.46, s2 16.05, s3 16.92, s4 18.61, s5 11.54 s.
+  durations: s1 15.46, s2 16.05, s3 16.92, s4 18.80, s5 11.54 s.
   Scene durations are audio + 0.30 s, as in the SCQ/MSE demo build.
 - Frames: `render/render.py` (PIL, Agorail palette, same design
   language as the SCQ/MSE demo); assembly `render/build.sh` (ffmpeg,
@@ -68,3 +74,21 @@ alignment is preserved from the capture.
 - Claims discipline: the video demonstrates only behavior the shipped
   verifier exhibits on the captured inputs. It claims no filing, no
   package, no adoption, and no production use.
+
+## Corrections after review (26 November 2026)
+
+Applied on the reviewer's notes before wider sharing; the film was
+rebuilt and re-QC'd afterwards (same checks as above, all passing):
+
+1. Scene 3 headline now reads "NIC's signed documentation sample" —
+   the verifier establishes a match to the published sample with
+   dummy particulars, not to a genuine invoice.
+2. Scene 4 no longer says "same case": the headline, the narration
+   (re-synthesized for this scene only) and the capture's section
+   title all say "separate synthetic test", so the Factory
+   cancellation cannot be mistaken for a fact about the NIC sample.
+   The re-run capture differs from the original in exactly that one
+   title line; every verdict and reason is unchanged.
+3. The capture driver now resolves the checkout root as described
+   above, so the captures can be regenerated from the repository
+   itself; the stored captures remain the ones the frames quote.

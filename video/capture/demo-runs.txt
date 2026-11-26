@@ -16,7 +16,7 @@
    signed by checkout business        not_established
                                       (the checkout carries no AP2 merchant authorization)
 
-== Same case, signed status: cancelled before the payment event
+== Separate synthetic test, signed status: cancelled before the payment event
    structurally valid: True
    registration matches invoice       established
                                       (artifact signature verifies and every field the artifact binds matches)

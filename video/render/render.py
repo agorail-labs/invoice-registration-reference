@@ -189,7 +189,7 @@ def scene3(nlines):
     img = bg()
     d = ImageDraw.Draw(img)
     header(d, "THE SAME VERIFIER — THE TAX AUTHORITY'S OWN SIGNED SAMPLE")
-    d.text((90, 196), "A genuine signed invoice — and an honest gap", font=font(SANSB, 52), fill=TEXT)
+    d.text((90, 196), "NIC's signed documentation sample — and an honest gap", font=font(SANSB, 52), fill=TEXT)
     terminal(d, [90, 300, 1830, 740], "shipped verifier, unmodified — NIC published sample, dummy particulars",
              S3_LINES[:nlines])
     if nlines >= 6:
@@ -204,7 +204,7 @@ for i, n in enumerate([3, 5, 6]):
 
 # ---------------------------------------------------------------- S4
 S4_LINES = [
-    ("== Same case, signed status: cancelled before the payment event", MUTED),
+    ("== Separate synthetic test, signed status: cancelled before the payment event", MUTED),
     ("   structurally valid: True", TEXT),
     ("   registration matches invoice       established", GREEN),
     ("   registration active at payment     contradicted", RED),
@@ -217,7 +217,7 @@ def scene4(nlines):
     img = bg()
     d = ImageDraw.Draw(img)
     header(d, "WHEN THE EVIDENCE TURNS — CANCELLED BEFORE PAYMENT")
-    d.text((90, 196), "Same case. One signed fact changes. So does the verdict.", font=font(SANSB, 52), fill=TEXT)
+    d.text((90, 196), "In a separate synthetic test. One signed fact changes the verdict.", font=font(SANSB, 46), fill=TEXT)
     terminal(d, [90, 300, 1830, 740], "test-suite construction (Factory), run through the same verifier",
              S4_LINES[:nlines])
     if nlines >= 6:

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoice-registration-reference"
+version = "0.1.0"
+description = "Offline Python reference verifier for invoice-registration evidence in UCP checkout and order payloads"
+readme = "verifier/PACKAGE.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{name = "Agorail Labs"}]
+dependencies = [
+    "cryptography>=41",
+    "rfc8785>=0.1.4",
+    "tzdata>=2024.1",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Source = "https://github.com/agorail-labs/invoice-registration-reference"
+Specification = "https://agorail-labs.github.io/invoice-registration-reference/spec/invoice-registration-reference-v0.1.md"
+Schema = "https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json"
+Issues = "https://github.com/agorail-labs/invoice-registration-reference/issues"
+
+[tool.setuptools]
+packages = ["invoice_registration_reference"]
+package-dir = {invoice_registration_reference = "verifier"}
+include-package-data = false

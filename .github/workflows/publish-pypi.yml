@@ -1,0 +1,40 @@
+name: Publish invoice-registration-reference 0.1.0 to PyPI
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pypi-invoice-registration-reference-0.1.0
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/invoice-registration-reference/0.1.0/
+    permissions:
+      id-token: write
+    steps:
+      - name: Retrieve and verify the reviewed distributions
+        shell: bash
+        run: |
+          mkdir -p dist
+          blob_url="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/git/blobs"
+          curl --fail --silent --show-error --retry 3 --max-time 45 \
+            --header 'Accept: application/vnd.github.raw+json' \
+            "$blob_url/9af41295557bb24967ab264a0054a6fcb17a651e" \
+            --output dist/invoice_registration_reference-0.1.0-py3-none-any.whl
+          curl --fail --silent --show-error --retry 3 --max-time 45 \
+            --header 'Accept: application/vnd.github.raw+json' \
+            "$blob_url/7a27c37aae3c3cf91d9bf3fb21a1c389bc4ff638" \
+            --output dist/invoice_registration_reference-0.1.0.tar.gz
+          sha256sum --check <<'SHA256SUMS'
+          ceb38d5f7d5516edb3acf804ec7cf250bf99c9de374d3d8f6bd0131700057d92  dist/invoice_registration_reference-0.1.0-py3-none-any.whl
+          fcedea69580bd281839ecfaecd2454e864eede97ee7b6338dc071e17da157775  dist/invoice_registration_reference-0.1.0.tar.gz
+          SHA256SUMS
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1

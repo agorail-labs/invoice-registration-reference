@@ -1,0 +1,12 @@
+$ python -m pip install invoice-registration-reference==0.1.0
+Collecting invoice-registration-reference==0.1.0
+Successfully installed cffi-2.1.1 cryptography-50.0.2 invoice-registration-reference-0.1.0 pycparser-3.12 rfc8785-0.1.4 tzdata-2026.6
+
+$ python video/demo_verify.py
+structurally valid: True
+registration matches invoice       established
+                                   (artifact signature verifies and every field the artifact binds matches)
+registration active at payment     established
+                                   (registration time is at or before the payment event, an authenticated active observation at or after it is present, and the scheme's documented rule is that a cancelled registration cannot be reinstated)
+signed by checkout business        established
+                                   (merchant signature verifies over the final checkout, the order's snapshot equals its reference, and the order names that checkout)

@@ -21,57 +21,65 @@ Was that registration still active when the money moved?
 And did the business sign this checkout?
 
 6
-00:00:15.763 --> 00:00:25.695
-The Invoice Registration Reference adds one capability to checkout and order: a reference to the invoice and its registration, checkable against the scheme's own signed evidence.
+00:00:15.763 --> 00:00:17.484
+It ships as a Python package.
 
 7
-00:00:25.695 --> 00:00:32.111
-Run the verifier on a complete synthetic case, and all three questions come back established, each with its reason.
+00:00:17.484 --> 00:00:23.477
+Install it, load the checkout, the order, the evidence bundle and your trusted keys, and call verify.
 
 8
-00:00:32.111 --> 00:00:36.463
-Now the real thing: the tax authority's own published, signed sample.
+00:00:23.477 --> 00:00:28.818
+Your integration supplies the evidence and trusted keys. The verifier checks them offline.
 
 9
-00:00:36.463 --> 00:00:40.184
-The verifier confirms the registration matches the invoice.
+00:00:28.818 --> 00:00:34.515
+On the complete synthetic case, all three questions come back established, each with its reason.
 
 10
-00:00:40.184 --> 00:00:45.798
-But the sample carries no payment evidence, so was it active at payment? Not established.
+00:00:34.515 --> 00:00:38.867
+Now the real thing: the tax authority's own published, signed sample.
 
 11
-00:00:45.798 --> 00:00:49.330
-The verifier says what the evidence proves, and no more.
+00:00:38.867 --> 00:00:42.588
+The verifier confirms the registration matches the invoice.
 
 12
-00:00:49.330 --> 00:00:52.388
-And when the evidence turns, so does the verdict.
+00:00:42.588 --> 00:00:48.201
+But the sample carries no payment evidence, so was it active at payment? Not established.
 
 13
-00:00:52.388 --> 00:00:59.192
-In a separate synthetic test, the signed status says the registration was cancelled before the payment event.
+00:00:48.201 --> 00:00:51.733
+The verifier says what the evidence proves, and no more.
 
 14
-00:00:59.192 --> 00:01:03.874
-Active at payment: contradicted, with the cancellation named as the reason.
+00:00:51.733 --> 00:00:54.792
+And when the evidence turns, so does the verdict.
 
 15
-00:01:03.874 --> 00:01:08.430
-Three verdicts, three values: established, not established, contradicted.
+00:00:54.792 --> 00:01:01.595
+In a separate synthetic test, the signed status says the registration was cancelled before the payment event.
 
 16
-00:01:08.430 --> 00:01:11.662
-Read the specification, and run the verifier yourself.
+00:01:01.595 --> 00:01:06.277
+Active at payment: contradicted, with the cancellation named as the reason.
 
 17
-00:01:11.662 --> 00:01:15.552
-The repository is public, and the schema is live on GitHub Pages.
+00:01:06.277 --> 00:01:10.834
+Three verdicts, three values: established, not established, contradicted.
 
 18
-00:01:15.552 --> 00:01:19.921
-The demo uses simulated registration status and payment capture evidence.
+00:01:10.834 --> 00:01:14.065
+Read the specification, and run the verifier yourself.
 
 19
-00:01:19.921 --> 00:01:22.793
+00:01:14.065 --> 00:01:17.955
+The repository is public, and the schema is live on GitHub Pages.
+
+20
+00:01:17.955 --> 00:01:22.324
+The demo uses simulated registration status and payment capture evidence.
+
+21
+00:01:22.324 --> 00:01:25.197
 Live integrations supply authenticated evidence.

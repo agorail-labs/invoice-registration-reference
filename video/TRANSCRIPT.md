@@ -1,8 +1,8 @@
 # Narration transcript — "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
 
-Full video: `dist/irr-demo.mp4` (82.87 s, 1920×1080, narrated).
+Full video: `dist/irr-demo.mp4` (85.29 s, 1920×1080, narrated).
 Voice: synthesized (Helio), English. Captions: `dist/captions.vtt`
-(19 cues, timed from the actual segment durations).
+(21 cues, timed from the actual segment durations).
 
 ## S1 — The problem
 
@@ -11,13 +11,13 @@ easy. Proving what was paid is not. Was the invoice really registered
 with the tax authority? Was that registration still active when the
 money moved? And did the business sign this checkout?
 
-## S2 — The reference, on complete evidence
+## S2 — The published package, on complete evidence
 
-The Invoice Registration Reference adds one capability to checkout
-and order: a reference to the invoice and its registration, checkable
-against the scheme's own signed evidence. Run the verifier on a
-complete synthetic case, and all three questions come back
-established, each with its reason.
+It ships as a Python package. Install it, load the checkout, the
+order, the evidence bundle and your trusted keys, and call verify.
+Your integration supplies the evidence and trusted keys. The
+verifier checks them offline. On the complete synthetic case, all
+three questions come back established, each with its reason.
 
 ## S3 — The honest gap, on a real signed sample
 

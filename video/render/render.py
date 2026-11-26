@@ -149,39 +149,43 @@ save(scene1(True), "s1_b.png")
 
 # ---------------------------------------------------------------- S2
 S2_LINES = [
-    ("== Example 2 - synthetic full evidence (examples/example-2-synthetic-full)", MUTED),
-    ("   structurally valid: True", TEXT),
-    ("   registration matches invoice       established", GREEN),
-    ("   registration active at payment     established", GREEN),
-    ("   signed by checkout business        established", GREEN),
+    ("$ python -m pip install invoice-registration-reference==0.1.0", TEXT),
+    ("Successfully installed cffi-2.1.1 cryptography-50.0.2 invoice-registration-reference-0.1.0 pycparser-3.12 rfc8785-0.1.4 tzdata-2026.6", MUTED),
+    ("$ python video/demo_verify.py", TEXT),
+    ("from invoice_registration_reference import verify", CYAN),
+    ("result = verify(checkout, order, evidence_bundle, config)", TEXT),
+    ("structurally valid: True", TEXT),
+    ("registration matches invoice       established", GREEN),
+    ("registration active at payment     established", GREEN),
+    ("signed by checkout business        established", GREEN),
 ]
 
 
 def scene2(nlines):
     img = bg()
     d = ImageDraw.Draw(img)
-    header(d, "THE VERIFIER — COMPLETE SYNTHETIC EVIDENCE")
-    d.text((90, 196), "Three questions, three verdicts — each with a reason", font=font(SANSB, 52), fill=TEXT)
-    terminal(d, [90, 300, 1830, 700], "shipped verifier, unmodified — public repo at commit 217b5bb",
+    header(d, "THE PUBLISHED PACKAGE — PYPI, VERSION 0.1.0")
+    d.text((90, 196), "Install it. Call verify. Get three verdicts.", font=font(SANSB, 52), fill=TEXT)
+    terminal(d, [90, 290, 1830, 840], "published package run — clean venv, fixture: examples/example-2-synthetic-full",
              S2_LINES[:nlines])
-    if nlines >= 5:
-        callout(d, [90, 750, 1830, 900],
-                "Underneath each verdict sits its reason: the artifact signature verifies, and every field the artifact binds matches the reference.")
+    if nlines >= 9:
+        callout(d, [90, 855, 1830, 995],
+                "Your integration supplies the evidence and trusted keys. The verifier checks them offline — every verdict with its reason attached.")
     footer(d)
     return img
 
 
-for i, n in enumerate([2, 4, 5]):
+for i, n in enumerate([2, 5, 9]):
     save(scene2(n), f"s2_{'abc'[i]}.png")
 
 # ---------------------------------------------------------------- S3
 S3_LINES = [
     ("== Example 1 - NIC's published signed sample (examples/example-1-operator-sample)", MUTED),
     ("   structurally valid: True", TEXT),
-    ("   registration matches invoice       established", GREEN),
-    ("   registration active at payment     not_established", AMBER),
+    ("registration matches invoice       established", GREEN),
+    ("registration active at payment     not_established", AMBER),
     ("                                      (no payment-event evidence supplied)", MUTED),
-    ("   signed by checkout business        not_established", AMBER),
+    ("signed by checkout business        not_established", AMBER),
 ]
 
 
@@ -206,10 +210,10 @@ for i, n in enumerate([3, 5, 6]):
 S4_LINES = [
     ("== Separate synthetic test, signed status: cancelled before the payment event", MUTED),
     ("   structurally valid: True", TEXT),
-    ("   registration matches invoice       established", GREEN),
-    ("   registration active at payment     contradicted", RED),
+    ("registration matches invoice       established", GREEN),
+    ("registration active at payment     contradicted", RED),
     ("                                      (authenticated cancellation took effect at or before the payment event)", MUTED),
-    ("   signed by checkout business        established", GREEN),
+    ("signed by checkout business        established", GREEN),
 ]
 
 
@@ -238,9 +242,9 @@ def scene5():
     d.text((90, 250), "Read it. Run it.", font=font(SANSB, 74), fill=TEXT)
     d.text((90, 340), "Check the verdicts yourself.", font=font(SANSB, 74), fill=TEXT)
     rows = [
+        ("PyPI package", "pypi.org/project/invoice-registration-reference"),
+        ("Runnable example", "github.com/agorail-labs/invoice-registration-reference/blob/main/video/demo_verify.py"),
         ("Repository", "github.com/agorail-labs/invoice-registration-reference"),
-        ("Schema (live)", "agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json"),
-        ("Specification", "agorail-labs.github.io/invoice-registration-reference/spec/invoice-registration-reference-v0.1.md"),
     ]
     y = 500
     for label, url in rows:

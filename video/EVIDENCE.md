@@ -1,10 +1,10 @@
 # Technical evidence — IRR demo video
 
 **Video:** "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
-**Rendered:** 2026-11-26 (IST) · **Final runtime:** 82.87 s, 1920×1080, 30 fps.
-**Deliverables:** `dist/irr-demo.mp4` (sha256 aba21d4b69c42385…),
-`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 b0dbfaeead6a9b88…),
-`dist/captions.vtt` (19 cues), `dist/poster.png`.
+**Rendered:** 2026-11-26 (IST) · **Final runtime:** 85.29 s, 1920×1080, 30 fps.
+**Deliverables:** `dist/irr-demo.mp4` (sha256 c02da058da8f8229…),
+`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 83afe449365d884c…),
+`dist/captions.vtt` (21 cues), `dist/poster.png`.
 
 ## What was actually run
 
@@ -48,7 +48,7 @@ alignment is preserved from the capture.
 
 - Narration: synthesized per scene (`audio/s1..s5.mp3`, voice Helio /
   avocado_v2:MAI_03), trailing silence trimmed at −45 dB. Measured
-  durations: s1 15.46, s2 16.05, s3 16.92, s4 18.80, s5 14.06 s.
+  durations: s1 15.46, s2 18.45, s3 16.92, s4 18.80, s5 14.06 s.
   Scene durations are audio + 0.30 s, as in the SCQ/MSE demo build.
 - Frames: `render/render.py` (PIL, Agorail palette, same design
   language as the SCQ/MSE demo); assembly `render/build.sh` (ffmpeg,
@@ -118,3 +118,31 @@ rebuilt from source and re-QC'd (0 black segments, 0 silences
   19 cues.
 - Untouched, as instructed: the verifier, the schema, the captured
   outputs, and all historical records (release/ and research/).
+
+## Published-package entry point (26 November 2026, later revision)
+
+At Arjun's direction the demo's entry point is now the published
+PyPI package, `invoice-registration-reference` 0.1.0 (PyPI project
+uploaded 2026-11-26; wheel and sdist). Scene 2 was rebuilt around a
+real run of that package:
+
+- `capture/scene2-run.txt` is the verbatim capture: in a clean
+  venv, `python -m pip install invoice-registration-reference==0.1.0`
+  from PyPI, then `python video/demo_verify.py`.
+- `video/demo_verify.py` is the complete runnable script shown
+  beside the video: it loads the Example 2 fixture's checkout and
+  order, assembles the evidence bundle from the fixture's
+  `evidence/` directory, loads the trusted keys independently from
+  `validation/trust_config.json` (entry `example2`) and
+  `validation/trust_keys/`, and calls
+  `verify(checkout, order, evidence_bundle, config)` from the
+  installed package.
+- The run's output — structurally valid, and all three verdicts
+  established with the same reasons as the repository verifier's
+  own run — is what Scene 2 shows. Scene 3 (NIC documentation
+  sample) follows immediately, unchanged.
+- Scene 2 narration was re-synthesized for the new script; the
+  closing frame now links the PyPI package and the runnable
+  example. One layout defect found in QC (verdict rows overflowing
+  the terminal box) was fixed and the film rebuilt before this
+  record was written.

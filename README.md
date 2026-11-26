@@ -1,106 +1,46 @@
-# Invoice Registration Reference v0.1 — Public Release
+# Invoice Registration Reference
 
-A reference implementation for verifying invoice registration evidence
-in UCP checkout and order flows. A UCP extension that lets a
-checkout paying the business's own already-issued invoice carry a
-reference to that invoice and to its registration with a tax scheme,
-checkable against the scheme's own signed evidence.
+An independent UCP extension and offline Python verifier for a merchant collecting its own previously issued invoice. The extension carries the invoice and its registration reference through Checkout and Order. The verifier reports whether the registration matches the invoice, whether it was active at payment capture, and whether the checkout business signed the reference.
 
-**Capability:** `io.github.agorail-labs.shopping.invoice_reference`
-(extends `dev.ucp.shopping.checkout` and `dev.ucp.shopping.order`)
-**Version 0.1 scope:** one scheme (India's GST e-invoice / IRP), a
-merchant collecting its own issued invoice, invoice lines of quantity
-one, INR minor units, positive amounts, no discount, tax or fee that
-changes the invoice-only total.
+[Specification](https://agorail-labs.github.io/invoice-registration-reference/spec/invoice-registration-reference-v0.1.md) · [Schema](https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json) · [PyPI](https://pypi.org/project/invoice-registration-reference/) · [Demo](https://agorail-labs.github.io/invoice-registration-reference/video/dist/irr-demo.mp4)
 
-## Current status and known limitations
+The capability `io.github.agorail-labs.shopping.invoice_reference` extends `dev.ucp.shopping.checkout` and `dev.ucp.shopping.order` and requires UCP 2026-08-25 or later. The v0.1 profile covers India's GST e-invoice scheme, invoice lines of quantity one, positive amounts in INR minor units, and checkout totals without adjustments that change the invoice-only amount.
 
-- **Public v0.1 offline reference.** Published 26 November 2026 at
-  Arjun's written Gate 3 approval (reviewed release commit
-  `e852200`). The capability's schema is served from GitHub Pages:
-  https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json
-- **Demo evidence.** The demo video under `video/` uses simulated
-  registration status and payment capture evidence. Live integrations
-  supply authenticated evidence.
-- **Tooling: Python, approved.** The build inherited the
-  organisation's TypeScript/npm convention (SCQ/MSE), but the
-  delivered verifier is Python; on 26 November 2026 Arjun approved
-  the Python implementation as the reference implementation for the
-  first release (`release/RC1_RELEASE_DECISION.md`). Repository
-  publication, Pages, and package publication remain separate
-  decisions.
-- **The verifier is a reference implementation**
-  (`verifier/invoice_reference_verifier.py`): it computes the three
-  verdicts from inputs against independently configured trust, and
-  its 38-test suite passes (`conformance/CONFORMANCE.md`). Status and
-  payment evidence remain the documented **simulated** formats — no
-  live scheme or provider channel is integrated in v0.1.
-- **Capture authentication.** The verifier's field matching (checkout
-  id, expected payment id, amount, currency) *binds* capture evidence
-  to the transaction; it does not *authenticate* it. A live verdict
-  requires capture evidence authenticated by the caller's payment
-  integration. The simulated capture format is unauthenticated by
-  construction.
-- **Evidence levels — read this before trusting any claim.**
-  Example 1 rests on the scheme operator's published sample — a
-  signed **documentation vector**, not a live registration (signature
-  verified offline, with a negative control). Example 2 is
-  fully synthetic, with simulated status and payment evidence in the
-  documented formats, labelled `simulated` in the files themselves.
-  No real invoice is used anywhere.
-- **Gate 1 review closure (26 November 2026):** the official
-  `ucp-schema` tool was run by the lead — definition passed strict
-  lint, payloads pass strict validation as delivered (see
-  `validation/VALIDATION.md`); the India no-reinstatement rule is
-  pinned to GSTN's e-Invoice FAQ v1.4, question 91. Remaining Gate 2
-  items are the verifier, the conformance suite and the
-  production-shaped synthetic IRP case.
-- Deterministic conformance results (Gate 2) will be reported
-  separately from the programme's model-review measurements, with
-  their denominators, corrected figures and exploratory runs
-  identified as such.
+## Run the example
 
-## Layout
-
-- `spec/` — normative specification (`invoice-registration-reference-v0.1.md`)
-- `schema/` — the capability definition (`invoice_reference.json`),
-  with separate composed definitions for checkout and for order
-- `verifier/` — the Gate 2 reference verifier and its test suite
-- `conformance/` — the Gate 2 conformance mapping (13 build-order
-  cases plus the review carry-ins) and the recorded test output
-- `research/` — Gate 1 report (Payment Terms and AP2's payment
-  reference vs what this adds), the Gate 2 evidence register and fit
-  analysis
-- `examples/` — Examples 1–2 (Gate 1) and Example 3, the
-  production-shaped synthetic IRP case (Gate 2), each with fixture
-  notes and an evidence bundle
-- `validation/` — Gate 1 validation harness, method and results;
-  example builders; independently configured trust keys and the
-  pinned cache of the published UCP schemas
-
-## Running the verifier and tests
-
-Requires Python 3.11+.
+From a checkout of this repository with Python 3.11 or later:
 
 ```sh
-pip install -r verifier/requirements.txt
-python3 -m unittest discover -s verifier/tests -v   # 38 tests
-python3 validation/validate_gate1.py                # Gate 1 harness, 36 checks
-python3 verifier/invoice_reference_verifier.py      # verdicts for Examples 1-3
+python -m pip install invoice-registration-reference==0.1.1
+python video/demo_verify.py
 ```
 
-The Gate 1 harness resolves the published UCP schemas from the
-pinned cache in `validation/schema_cache/` (see
-`THIRD_PARTY_NOTICES.md`), so a clean run needs no network access.
+The [example script](video/demo_verify.py) loads the checkout, order, evidence and independently configured trust before calling the verifier.
 
-## The central demonstration
+```python
+from invoice_registration_reference import verify
 
-Example 1: a genuine signed invoice establishes *registration
-matches*, while *active at payment* is correctly **not established** —
-the signed artifact carries no registration time and no status, and no
-status or payment evidence is held. Example 2 supplies the missing
-inputs (all simulated) and all three verdicts are established.
+result = verify(checkout, order, evidence_bundle, config)
+```
+
+The complete synthetic fixture returns three `established` verdicts. NIC's signed documentation sample establishes a registration match. Its activity at capture remains `not_established` because the fixture supplies no payment event.
+
+## Evidence and scope
+
+The demo uses simulated registration status and payment capture evidence. Live integrations supply authenticated evidence, including capture evidence authenticated by the caller's payment integration. Matching the checkout ID, payment ID, amount and currency binds capture evidence to the transaction. Authentication is a separate step.
+
+The verifier operates offline. Its inputs describe invoice registration evidence, rather than payment destination, amount owed, or delivery of goods or services. See the [evidence register](research/EVIDENCE_REGISTER.md) and [conformance mapping](conformance/CONFORMANCE.md) for source provenance and test coverage.
+
+## Run the conformance suite
+
+```sh
+python -m pip install -r verifier/requirements.txt
+python -m unittest discover -s verifier/tests -v
+python validation/validate_gate1.py
+```
+
+The source suite has 38 verifier tests and 36 schema-harness checks. The harness resolves the published UCP schemas from a pinned cache. See the [validation record](validation/VALIDATION.md) for schema-composition and strict-validation results.
 
 ## Licence
 
-Apache License 2.0 (see `LICENSE`).
+[Apache License 2.0](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) for the bundled schemas and sample provenance.

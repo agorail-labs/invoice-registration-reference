@@ -14,11 +14,12 @@ changes the invoice-only total.
 
 ## Current status and known limitations
 
-- **Gate 2 complete, private.** This repository is private until
-  Gate 3. Nothing here is published, filed, or served: the
-  capability's schema URL (`agorail-labs.github.io`) does not yet
-  resolve, so authority binding is prospective. Publication requires
-  Arjun's written approval at Gate 3.
+- **Public v0.1 offline reference.** Published 26 November 2026 at
+  Arjun's written Gate 3 approval (reviewed release commit
+  `e852200`). The capability's schema is served from GitHub Pages:
+  https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json
+  Nothing here has been filed with any standards body, and no
+  package publication has been made.
 - **Tooling: Python, approved.** The build inherited the
   organisation's TypeScript/npm convention (SCQ/MSE), but the
   delivered verifier is Python; on 26 November 2026 Arjun approved

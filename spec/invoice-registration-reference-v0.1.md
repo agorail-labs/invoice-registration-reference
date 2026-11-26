@@ -1,7 +1,8 @@
 # Invoice Registration Reference — Specification v0.1
 
-**Status:** Gate 1 draft. Private until Gate 3. Nothing in this document is
-published, and no part of it has been filed with any standards body.
+**Status:** Public v0.1 offline reference. Published 26 November 2026
+(reviewed release commit `e852200`). No part of it has been filed
+with any standards body.
 **Capability:** `io.github.agorail-labs.shopping.invoice_reference`
 **Capability version:** `2026-11-26` (dated, independent of this package's
 version)
@@ -316,11 +317,12 @@ From the scheme's published material, as read for this reference
   protocol and both parent capabilities at minimum `2026-08-25`).
 - The capability version is dated (`2026-11-26`) and independent of
   this package's version.
-- Authority binding is prospective until Gate 3: the name
-  `io.github.agorail-labs.shopping.invoice_reference` is valid under
-  UCP's published reverse-domain pattern and binds to a schema served
-  from `agorail-labs.github.io`, a host the organisation does not yet
-  serve a site from. Publication is Gate 3, on Arjun's written approval.
+- Authority binding: the name
+  `io.github.agorail-labs.shopping.invoice_reference` follows UCP's
+  published reverse-domain pattern and binds to the schema served at
+  https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json
+  (the definition's `$id`; live since the v0.1 publication on
+  26 November 2026).
 - Composed checkout and order payloads for both examples were validated
   locally in strict mode; method and results are in
   `validation/VALIDATION.md`.

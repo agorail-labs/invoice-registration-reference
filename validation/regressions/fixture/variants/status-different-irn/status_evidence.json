@@ -1,0 +1,11 @@
+{
+  "format": "simulated-irp-status-jws-v1",
+  "jws": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWdpc3RyYXRpb25faWRlbnRpZmllciI6IjdmNTFiOWU3YTBjYWUyMTM4MDJjMDY5MDI3MDAxZTk5MzVkODJiOWFmZTVjNjRlYTQyMmYzMDVlYzQ5ZDQyYWYiLCJzdGF0dXMiOiJhY3RpdmUiLCJjYW5jZWxsZWRfYXQiOm51bGwsIm9ic2VydmVkX2F0IjoiMjAyNi0xMS0yMVQwOTowMDowMCswNTozMCIsIm5vX3JlaW5zdGF0ZW1lbnQiOnRydWV9.h2V8HIU9vDUT_TgESy59yA53SiRw8Bsw5ETIGb-6p_bJ_8y_RdokP6vV387XRc6juF9fDgxBFSckkHUYukxxu4NNSzT7gBGtbnyIrqtFEfxtHAoXLS_Z2erRIylo-QDvNHpE4s_35oZ6ATnKDDw_N3DEICOq5QNARdAkprG0hptFeDkap3gqpV1psKF8UBRHnFN-mMOy05uve7pF2kzU-jbUlhuHBOVvyd9UTfV85SRfnzMTAfQ7Nt3lKbjzx91Qa5z5ggzIsqBZvoDoHcVOdRVwc2wNuYR4Z3LVhUuN2rnAkyd4KxP38uOqXOg5gL5W1clixAwV6RM_n_l6beUJLQ",
+  "claims": {
+    "registration_identifier": "7f51b9e7a0cae213802c069027001e9935d82b9afe5c64ea422f305ec49d42af",
+    "status": "active",
+    "cancelled_at": null,
+    "observed_at": "2026-11-21T09:00:00+05:30",
+    "no_reinstatement": true
+  }
+}

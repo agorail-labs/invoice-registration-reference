@@ -12,5 +12,11 @@
     "merchant_public_key": "trust_keys/ex3_merchant_public_key.jwk.json",
     "expected_payment_id": "pay_SIMULATED_0002",
     "scheme_timezone": "Asia/Kolkata"
+  },
+  "regression": {
+    "irp_public_key": "trust_keys/reg_irp_public_key.pem",
+    "merchant_public_key": "trust_keys/reg_merchant_public_key.jwk.json",
+    "expected_payment_id": "pay_REG_0001",
+    "scheme_timezone": "Asia/Kolkata"
   }
 }

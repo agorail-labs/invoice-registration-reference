@@ -1,7 +1,13 @@
 # Release decision — RC1 (for Gate 3 approval)
 
-**Status: awaiting Arjun's written Gate 3 approval.** Nothing in this
-document is an approval. Publication has not happened.
+**Status: tooling decided; publication NOT approved.** On 26 November
+2026 Arjun approved **Option A** (below): Python is the reference
+implementation for the first release. That approval covers the
+tooling only. Repository publication, GitHub Pages, and package
+publication each remain separate decisions, none of them taken; the
+repository stays private and local. (This document was drafted for
+RC1; RC2 supersedes RC1 as the candidate — see
+`release/RC2_CLEAN_RUN.md`.)
 
 ## What RC1 is
 
@@ -55,7 +61,11 @@ approval:
   Python-reference-only until the port lands.
 
 **Recommendation: Option A**, with the package decision kept
-separate either way. Arjun's call is recorded at Gate 3.
+separate either way. **Decided 26 November 2026: Arjun approved
+Option A** — Python is the reference implementation for the first
+release. The approval is for the Python implementation only;
+repository publication, Pages, and package publication remain
+separate decisions.
 
 ## Release claims settled before RC1
 
@@ -79,8 +89,11 @@ separate either way. Arjun's call is recorded at Gate 3.
 
 ## Clean-run requirement
 
-Gate 3 approval is contingent on the exact RC1 archive passing a
-clean run: fresh extraction, fresh virtual environment, dependencies
-from `verifier/requirements.txt`, the 22-test verifier suite and the
-36-check Gate 1 harness, all passing with no network access required.
-The run and its results are recorded in `release/RC1_CLEAN_RUN.md`.
+Gate 3 approval is contingent on the exact candidate archive passing
+a clean run: fresh extraction, fresh virtual environment,
+dependencies from `verifier/requirements.txt`, the verifier suite
+(22 tests at RC1; 27 at RC2, which adds file-based end-to-end
+regressions for the four binding verdict cases) and the 36-check
+Gate 1 harness, all passing with no network access required. The
+runs and their results are recorded in `release/RC1_CLEAN_RUN.md`
+and `release/RC2_CLEAN_RUN.md`.

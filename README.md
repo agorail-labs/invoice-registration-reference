@@ -19,10 +19,17 @@ changes the invoice-only total.
   capability's schema URL (`agorail-labs.github.io`) does not yet
   resolve, so authority binding is prospective. Publication requires
   Arjun's written approval at Gate 3.
+- **Tooling: Python, approved.** The build inherited the
+  organisation's TypeScript/npm convention (SCQ/MSE), but the
+  delivered verifier is Python; on 26 November 2026 Arjun approved
+  the Python implementation as the reference implementation for the
+  first release (`release/RC1_RELEASE_DECISION.md`). Repository
+  publication, Pages, and package publication remain separate
+  decisions.
 - **The verifier is a reference implementation**
   (`verifier/invoice_reference_verifier.py`): it computes the three
   verdicts from inputs against independently configured trust, and
-  its 22-test suite passes (`conformance/CONFORMANCE.md`). Status and
+  its 27-test suite passes (`conformance/CONFORMANCE.md`). Status and
   payment evidence remain the documented **simulated** formats — no
   live scheme or provider channel is integrated in v0.1.
 - **Capture authentication.** The verifier's field matching (checkout
@@ -74,7 +81,7 @@ Requires Python 3.11+.
 
 ```sh
 pip install -r verifier/requirements.txt
-python3 -m unittest discover -s verifier/tests -v   # 22 tests
+python3 -m unittest discover -s verifier/tests -v   # 27 tests
 python3 validation/validate_gate1.py                # Gate 1 harness, 36 checks
 python3 verifier/invoice_reference_verifier.py      # verdicts for Examples 1-3
 ```

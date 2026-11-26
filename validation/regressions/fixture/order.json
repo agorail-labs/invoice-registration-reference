@@ -1,0 +1,71 @@
+{
+  "ucp": {
+    "version": "2026-08-25",
+    "capabilities": {
+      "dev.ucp.shopping.order": [
+        {
+          "version": "2026-08-25",
+          "schema": "https://ucp.dev/2026-08-25/schemas/shopping/order.json"
+        }
+      ],
+      "io.github.agorail-labs.shopping.invoice_reference": [
+        {
+          "version": "2026-11-26",
+          "extends": [
+            "dev.ucp.shopping.checkout",
+            "dev.ucp.shopping.order"
+          ],
+          "spec": "https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json",
+          "schema": "https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json"
+        }
+      ]
+    }
+  },
+  "id": "ord_reg_001",
+  "checkout_id": "chk_reg_001",
+  "currency": "INR",
+  "line_items": [
+    {
+      "id": "li_1",
+      "quantity": 1,
+      "item": {
+        "id": "svc_1",
+        "title": "Advisory services"
+      },
+      "totals": [
+        {
+          "type": "total",
+          "amount": 11800000
+        }
+      ]
+    }
+  ],
+  "totals": [
+    {
+      "type": "total",
+      "amount": 11800000
+    }
+  ],
+  "invoice_reference": [
+    {
+      "line_item_id": "li_1",
+      "document": {
+        "number": "REG/2026-27/0001",
+        "type": "INV",
+        "issuer_tax_identity": "29ABCDE1234F1Z5",
+        "issue_date": "2026-11-20",
+        "total": 11800000
+      },
+      "registration": {
+        "scheme": "in_gst_einvoice_irp",
+        "identifier": "6768b0892486771a0302c962111a6f7df074f63bc85e663a8c8bcd40457a342e",
+        "artifact_digest": "sha256:7a045d587e72d9d67751aa0764d30ab94236b0b51e1805fa8475eca088ff9afd",
+        "registered_at": "2026-11-20T10:15:23+05:30"
+      },
+      "status": {
+        "value": "active",
+        "observed_at": "2026-11-21T09:00:00+05:30"
+      }
+    }
+  ]
+}

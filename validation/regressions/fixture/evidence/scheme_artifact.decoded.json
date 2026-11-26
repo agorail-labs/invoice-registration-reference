@@ -1,0 +1,13 @@
+{
+  "data": {
+    "SellerGstin": "29ABCDE1234F1Z5",
+    "DocNo": "REG/2026-27/0001",
+    "DocTyp": "INV",
+    "DocDt": "20/11/2026",
+    "TotInvVal": 118000,
+    "ItemCnt": 1,
+    "AckNo": 112610000000003,
+    "AckDt": "2026-11-20 10:15:23",
+    "Irn": "6768b0892486771a0302c962111a6f7df074f63bc85e663a8c8bcd40457a342e"
+  }
+}

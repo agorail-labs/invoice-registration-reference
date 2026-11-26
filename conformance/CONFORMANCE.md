@@ -2,8 +2,8 @@
 
 **Verifier:** `verifier/invoice_reference_verifier.py` — computes the
 three verdicts from inputs; nothing is precomputed or fixed.
-**Suite:** `verifier/tests/test_verifier.py` (unittest, 22 tests).
-**Results:** all 22 tests pass; full output in
+**Suite:** `verifier/tests/test_verifier.py` (unittest, 27 tests).
+**Results:** all 27 tests pass; full output in
 `conformance/test-results.txt` (run 26 November 2026). The Gate 1
 harness still passes 36/36 (`validation/validation-results.txt`); its
 schema fetches now resolve against a pinned cache of the published
@@ -45,6 +45,23 @@ output.
 | Production-shaped IRP fixture, AckDt nested and offset-free, **with** configured Asia/Kolkata timezone | §8.4, §9 | `test_example3_production_shaped_with_timezone` | all three **established** |
 | Same fixture **without** a configured timezone | §8.4 | `test_example3_without_configured_timezone` | active **not established** (reason: no documented scheme timezone); matches and signed stay established |
 | NIC operator sample (Example 1) through the verifier | §8, §9 scope | `test_example1_operator_sample` | matches **established** (documentation vector); active and signed **not established** |
+
+## RC2 file-based regressions (the four verdict cases)
+
+The four binding regressions also run as **file-based end-to-end
+cases** against a dedicated fixture on disk
+(`validation/regressions/fixture/`, builder
+`validation/build_regression_fixtures.py`, trust entry `regression`),
+so the exact shipped files — not in-memory constructions — produce
+the verdicts. One variant file per broken binding:
+
+| Variant | Broken binding | Expected → actual |
+| --- | --- | --- |
+| *(base)* | none | all three **established** |
+| `capture-currency` | capture currency ≠ checkout currency | active **not established** |
+| `capture-payment-id` | capture payment id ≠ configured expected id | active **not established** |
+| `order-checkout-id` | order `checkout_id` ≠ checkout id | signed **not established** |
+| `status-different-irn` | status JWS validly signed, different IRN | active **not established** (binding, not signature validity) |
 
 ## Notes
 

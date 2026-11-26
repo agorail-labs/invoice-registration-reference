@@ -17,11 +17,16 @@ test_example1_operator_sample (test_verifier.FileExamples.test_example1_operator
 test_example2_synthetic_full (test_verifier.FileExamples.test_example2_synthetic_full) ... ok
 test_example3_production_shaped_with_timezone (test_verifier.FileExamples.test_example3_production_shaped_with_timezone) ... ok
 test_example3_without_configured_timezone (test_verifier.FileExamples.test_example3_without_configured_timezone) ... ok
+test_base_all_established (test_verifier.FileRegressions.test_base_all_established) ... ok
+test_capture_currency_variant (test_verifier.FileRegressions.test_capture_currency_variant) ... ok
+test_capture_payment_id_variant (test_verifier.FileRegressions.test_capture_payment_id_variant) ... ok
+test_order_checkout_id_variant (test_verifier.FileRegressions.test_order_checkout_id_variant) ... ok
+test_status_different_irn_variant (test_verifier.FileRegressions.test_status_different_irn_variant) ... ok
 test_capture_currency_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_currency_mutation_active_not_established) ... ok
 test_capture_payment_id_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_payment_id_mutation_active_not_established) ... ok
 test_order_checkout_id_mutation_signed_not_established (test_verifier.LeadMutationsOnExample2.test_order_checkout_id_mutation_signed_not_established) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 1.382s
+Ran 27 tests in 1.203s
 
 OK

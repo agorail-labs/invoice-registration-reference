@@ -1,0 +1,9 @@
+{
+  "format": "simulated-capture-v1",
+  "payment_id": "pay_REG_0001",
+  "checkout_id": "chk_reg_001",
+  "status": "captured",
+  "amount": 11800000,
+  "currency": "INR",
+  "captured_at": "2026-11-20T15:42:10+05:30"
+}

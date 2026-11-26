@@ -363,5 +363,61 @@ class ConformanceCases(unittest.TestCase):
         self.assertEqual(r["verdicts"]["registration_active_at_payment"]["verdict"], E)
 
 
+class FileRegressions(unittest.TestCase):
+    """RC2: the four verdict regressions as file-based end-to-end cases.
+
+    Fixtures live in validation/regressions/fixture (builder:
+    validation/build_regression_fixtures.py): one base bundle plus one
+    variant file per broken binding, loaded from disk and run through
+    the verifier exactly as shipped.
+    """
+
+    FIX = ROOT / "validation" / "regressions" / "fixture"
+
+    def run_variant(self, variant=None):
+        config = V.load_config(ROOT, "regression")
+        checkout = json.loads((self.FIX / "checkout.json").read_text())
+        order = json.loads((self.FIX / "order.json").read_text())
+        bundle = V.load_bundle(self.FIX)
+        if variant:
+            vdir = self.FIX / "variants" / variant
+            for f in vdir.iterdir():
+                obj = json.loads(f.read_text())
+                if f.name == "order.json":
+                    order = obj
+                elif f.name == "payment_event.json":
+                    bundle["payment_event"] = obj
+                elif f.name == "status_evidence.json":
+                    bundle["status_evidence"] = obj
+        return V.verify(checkout, order, bundle, config)
+
+    M, A, S = ("registration_matches_invoice",
+               "registration_active_at_payment",
+               "signed_by_checkout_business")
+
+    def expect(self, r, m, a, s):
+        self.assertEqual(verdicts(r), {self.M: m, self.A: a, self.S: s})
+
+    def test_base_all_established(self):
+        r = self.run_variant()
+        self.assertTrue(r["valid"], r["violations"])
+        self.expect(r, E, E, E)
+
+    def test_capture_currency_variant(self):
+        self.expect(self.run_variant("capture-currency"), E, N, E)
+
+    def test_capture_payment_id_variant(self):
+        self.expect(self.run_variant("capture-payment-id"), E, N, E)
+
+    def test_order_checkout_id_variant(self):
+        self.expect(self.run_variant("order-checkout-id"), E, E, N)
+
+    def test_status_different_irn_variant(self):
+        r = self.run_variant("status-different-irn")
+        self.expect(r, E, N, E)
+        self.assertIn("different registration identifier",
+                      r["verdicts"][self.A]["reason"])
+
+
 if __name__ == "__main__":
     unittest.main()

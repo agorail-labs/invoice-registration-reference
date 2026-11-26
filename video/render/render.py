@@ -53,7 +53,7 @@ def header(d, kicker):
     d.text((90, 132), kicker, font=font(SANS, 25), fill=MUTED)
 
 
-def footer(d, note="Public v0.1 offline reference · experimental · nothing filed · no package"):
+def footer(d, note="Public v0.1 offline reference"):
     d.text((90, H - 58), note, font=font(SANS, 23), fill=FAINT)
 
 
@@ -249,7 +249,9 @@ def scene5():
         d.text((126, y + 48), url, font=font(MONO, 26), fill=TEXT)
         y += 116
     callout(d, [90, y + 4, 1830, y + 130],
-            "Offline Python reference · 38 verifier tests · 36 schema-harness checks · Experimental research software — nothing filed, no package, no production claim.", accent=BLUE)
+            "Offline Python reference · 38 verifier tests · 36 schema-harness checks.", accent=BLUE)
+    d.text((90, y + 146), "The demo uses simulated registration status and payment capture evidence. Live integrations supply authenticated evidence.",
+           font=font(SANS, 24), fill=MUTED)
     footer(d)
     return img
 

@@ -1,7 +1,9 @@
 # Demo video
 
+**Invoice Registration Reference v0.1 — Public Release.**
+
 "When an AI agent pays an invoice, what proves it was real?" — an
-80-second narrated walkthrough of this reference, built only from
+86-second narrated walkthrough of this reference, built only from
 real runs of the shipped verifier.
 
 - Watch: `dist/irr-demo.mp4` (80 s, 1920x1080, narrated)

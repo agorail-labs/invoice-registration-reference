@@ -1,8 +1,8 @@
 # Narration transcript — "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
 
-Full video: `dist/irr-demo.mp4` (80.35 s, 1920×1080, narrated).
+Full video: `dist/irr-demo.mp4` (82.87 s, 1920×1080, narrated).
 Voice: synthesized (Helio), English. Captions: `dist/captions.vtt`
-(18 cues, timed from the actual segment durations).
+(19 cues, timed from the actual segment durations).
 
 ## S1 — The problem
 
@@ -37,5 +37,6 @@ established, contradicted.
 ## S5 — Call to action
 
 Read the specification, and run the verifier yourself. The repository
-is public, and the schema is live on GitHub Pages. Experimental
-research software: nothing filed, no package, no production claim.
+is public, and the schema is live on GitHub Pages. The demo uses simulated registration
+status and payment capture evidence. Live integrations supply
+authenticated evidence.

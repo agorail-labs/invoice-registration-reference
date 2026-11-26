@@ -1,10 +1,10 @@
 # Technical evidence — IRR demo video
 
 **Video:** "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
-**Rendered:** 2026-11-26 (IST) · **Final runtime:** 80.35 s, 1920×1080, 30 fps.
-**Deliverables:** `dist/irr-demo.mp4` (sha256 83e138e431411496…),
-`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 f822f0e06fd12bd1…),
-`dist/captions.vtt` (18 cues), `dist/poster.png`.
+**Rendered:** 2026-11-26 (IST) · **Final runtime:** 82.87 s, 1920×1080, 30 fps.
+**Deliverables:** `dist/irr-demo.mp4` (sha256 aba21d4b69c42385…),
+`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 b0dbfaeead6a9b88…),
+`dist/captions.vtt` (19 cues), `dist/poster.png`.
 
 ## What was actually run
 
@@ -48,7 +48,7 @@ alignment is preserved from the capture.
 
 - Narration: synthesized per scene (`audio/s1..s5.mp3`, voice Helio /
   avocado_v2:MAI_03), trailing silence trimmed at −45 dB. Measured
-  durations: s1 15.46, s2 16.05, s3 16.92, s4 18.80, s5 11.54 s.
+  durations: s1 15.46, s2 16.05, s3 16.92, s4 18.80, s5 14.06 s.
   Scene durations are audio + 0.30 s, as in the SCQ/MSE demo build.
 - Frames: `render/render.py` (PIL, Agorail palette, same design
   language as the SCQ/MSE demo); assembly `render/build.sh` (ffmpeg,
@@ -92,3 +92,29 @@ rebuilt and re-QC'd afterwards (same checks as above, all passing):
 3. The capture driver now resolves the checkout root as described
    above, so the captures can be regenerated from the repository
    itself; the stored captures remain the ones the frames quote.
+
+## Public-release wording update (26 November 2026)
+
+On Arjun's instruction, "experimental" was removed from every
+public-facing surface of the v0.1 materials, and the film was
+rebuilt from source and re-QC'd (0 black segments, 0 silences
+>= 0.8 s at -45 dB, audio peak -7.5 dB, frames inspected):
+
+- Release title: "Invoice Registration Reference v0.1 — Public
+  Release" (README heading; video package README).
+- Description: "reference implementation for verifying invoice
+  registration evidence in UCP checkout and order flows" (README
+  lead; GitHub repository description on publication).
+- Frame footers and the poster no longer carry "experimental";
+  the closing callout drops "Experimental research software".
+- Scene 5 narration was re-synthesized (this scene only) to end
+  with the evidence disclosure: "The demo uses simulated
+  registration status and payment capture evidence. Live
+  integrations supply authenticated evidence." The same disclosure
+  line appears on the closing frame and in the README. The
+  "nothing filed / no package" disclaimer line was removed from
+  the footers, the closing callout, the narration, the README and
+  the spec header on Arjun's instruction. Captions regenerated:
+  19 cues.
+- Untouched, as instructed: the verifier, the schema, the captured
+  outputs, and all historical records (release/ and research/).

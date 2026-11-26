@@ -1,8 +1,7 @@
 # Invoice Registration Reference — Specification v0.1
 
 **Status:** Public v0.1 offline reference. Published 26 November 2026
-(reviewed release commit `e852200`). No part of it has been filed
-with any standards body.
+(reviewed release commit `e852200`).
 **Capability:** `io.github.agorail-labs.shopping.invoice_reference`
 **Capability version:** `2026-11-26` (dated, independent of this package's
 version)

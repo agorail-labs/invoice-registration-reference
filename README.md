@@ -1,6 +1,7 @@
-# invoice-registration-reference
+# Invoice Registration Reference v0.1 — Public Release
 
-An offline reference for invoice evidence: a UCP extension that lets a
+A reference implementation for verifying invoice registration evidence
+in UCP checkout and order flows. A UCP extension that lets a
 checkout paying the business's own already-issued invoice carry a
 reference to that invoice and to its registration with a tax scheme,
 checkable against the scheme's own signed evidence.
@@ -18,8 +19,9 @@ changes the invoice-only total.
   Arjun's written Gate 3 approval (reviewed release commit
   `e852200`). The capability's schema is served from GitHub Pages:
   https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json
-  Nothing here has been filed with any standards body, and no
-  package publication has been made.
+- **Demo evidence.** The demo video under `video/` uses simulated
+  registration status and payment capture evidence. Live integrations
+  supply authenticated evidence.
 - **Tooling: Python, approved.** The build inherited the
   organisation's TypeScript/npm convention (SCQ/MSE), but the
   delivered verifier is Python; on 26 November 2026 Arjun approved

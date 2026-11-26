@@ -21,7 +21,8 @@ SEGMENTS = [
             "Three verdicts, three values: established, not established, contradicted."]),
     ("s5", ["Read the specification, and run the verifier yourself.",
             "The repository is public, and the schema is live on GitHub Pages.",
-            "Experimental research software: nothing filed, no package, no production claim."]),
+            "The demo uses simulated registration status and payment capture evidence.",
+            "Live integrations supply authenticated evidence."]),
 ]
 PAD = 0.30
 

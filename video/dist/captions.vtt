@@ -61,13 +61,17 @@ Active at payment: contradicted, with the cancellation named as the reason.
 Three verdicts, three values: established, not established, contradicted.
 
 16
-00:01:08.430 --> 00:01:11.659
+00:01:08.430 --> 00:01:11.662
 Read the specification, and run the verifier yourself.
 
 17
-00:01:11.659 --> 00:01:15.546
+00:01:11.662 --> 00:01:15.552
 The repository is public, and the schema is live on GitHub Pages.
 
 18
-00:01:15.546 --> 00:01:20.270
-Experimental research software: nothing filed, no package, no production claim.
+00:01:15.552 --> 00:01:19.921
+The demo uses simulated registration status and payment capture evidence.
+
+19
+00:01:19.921 --> 00:01:22.793
+Live integrations supply authenticated evidence.

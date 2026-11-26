@@ -1,0 +1,16 @@
+{
+  "simulated": true,
+  "format": "Signed status response (compact JWS, RS256) from the scheme, simulated for this example. A live integration supplies the scheme's own authenticated status response in this place.",
+  "claims": {
+    "simulated": true,
+    "kind": "scheme_status_response",
+    "scheme": "in_gst_einvoice_irp",
+    "registration_identifier": "4d98959363b1b34d8f918b6688bcbb0abcf59d9982868507df158159d4202f3a",
+    "status": "active",
+    "observed_at": "2026-11-21T09:00:00+05:30",
+    "cancelled_at": null,
+    "scheme_rule": "A cancelled IRN is not reinstated. A correction is made by a new document with its own IRN."
+  },
+  "jws": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InNpbXVsYXRlZC1pcnAta2V5LTEifQ.eyJzaW11bGF0ZWQiOnRydWUsImtpbmQiOiJzY2hlbWVfc3RhdHVzX3Jlc3BvbnNlIiwic2NoZW1lIjoiaW5fZ3N0X2VpbnZvaWNlX2lycCIsInJlZ2lzdHJhdGlvbl9pZGVudGlmaWVyIjoiNGQ5ODk1OTM2M2IxYjM0ZDhmOTE4YjY2ODhiY2JiMGFiY2Y1OWQ5OTgyODY4NTA3ZGYxNTgxNTlkNDIwMmYzYSIsInN0YXR1cyI6ImFjdGl2ZSIsIm9ic2VydmVkX2F0IjoiMjAyNi0xMS0yMVQwOTowMDowMCswNTozMCIsImNhbmNlbGxlZF9hdCI6bnVsbCwic2NoZW1lX3J1bGUiOiJBIGNhbmNlbGxlZCBJUk4gaXMgbm90IHJlaW5zdGF0ZWQuIEEgY29ycmVjdGlvbiBpcyBtYWRlIGJ5IGEgbmV3IGRvY3VtZW50IHdpdGggaXRzIG93biBJUk4uIn0.ikKj0cKrpkogWZ6bHhHdOuIjUq-G91cAQrHc-WnfBzbrBGIrH0RR3e-8BuihxJfAW2kd1tvH5zsv6riYWRajiDLfd1Bwf0kWHHJSFD9pTYzbKcT51x_PeIx9msdoKpydHdIlDq1uIJ6f7bJV4Odm3IWfCbeQT2Xq9kK3ryy_8C_WO-YnJPCmT9OA1enjp1A8v3T69-fLYot-pSptTo7gnfL6HxkXv2gT4fG8t2KQfhmhnUy7Uq1u0l6-T0SM7tPGWdmYCAby1izYfcWtsnD4nvbmLFVS57M12mBJEe-wKtOS0Y_O3QZaUgyLV_0jutdQv_GGdnWCcAMByrWbcd0yCQ",
+  "verification_key": "simulated_irp_public_key.pem"
+}

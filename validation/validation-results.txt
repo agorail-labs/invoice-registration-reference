@@ -1,0 +1,46 @@
+PASS definition is a valid draft 2020-12 schema
+PASS example1 checkout: composed schema validation
+PASS example1 checkout: strict overlay (no undeclared keys)
+PASS example1 order: composed schema validation
+PASS example1 order: strict overlay (no undeclared keys)
+PASS example1: rule 1 (each entry one line item; no line item twice; no identifier/document on two lines)
+PASS example1: rule 2 (each invoice line total equals amount applied; invoice lines sum to checkout total)
+PASS example1: rule 4 (declared balance arithmetic)
+PASS example1: rule 6 (registration present => status present)
+PASS example1: order snapshot equals checkout reference (rule: order snapshot)
+PASS example1: artifact digest matches reference
+PASS example1: NIC sample signature verifies offline (RS256)
+PASS example1: negative control (one character flipped) fails
+PASS example1: reference fields match signed artifact wherever it binds them
+PASS example2 checkout: composed schema validation
+PASS example2 checkout: strict overlay (no undeclared keys)
+PASS example2 order: composed schema validation
+PASS example2 order: strict overlay (no undeclared keys)
+PASS example2: rule 1 (each entry one line item; no line item twice; no identifier/document on two lines)
+PASS example2: rule 2 (each invoice line total equals amount applied; invoice lines sum to checkout total)
+PASS example2: rule 4 (declared balance arithmetic)
+PASS example2: rule 6 (registration present => status present)
+PASS example2: order snapshot equals checkout reference (rule: order snapshot)
+PASS example2: artifact digest matches reference
+PASS example2: simulated scheme artifact signature verifies (RS256)
+PASS example2: reference fields match simulated artifact; IRN recomputes
+PASS example2: simulated status evidence signature verifies (RS256)
+PASS example2: payment event is provider capture bound to checkout and payment id
+PASS example2: active-at-payment establishment conditions (spec section 8)
+PASS example2: AP2 merchant authorization verifies over final checkout (JCS, ap2 excluded; invoice_reference covered)
+
+Verdicts (specification section 8 definitions, Gate 1 examples only):
+{
+  "example1": {
+    "registration_matches_invoice": "established",
+    "registration_active_at_payment": "not_established",
+    "signed_by_checkout_business": "not_established"
+  },
+  "example2": {
+    "registration_matches_invoice": "established",
+    "registration_active_at_payment": "established",
+    "signed_by_checkout_business": "established"
+  }
+}
+
+RESULT: PASS (all checks)

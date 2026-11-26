@@ -1,0 +1,85 @@
+{
+  "ucp": {
+    "version": "2026-08-25",
+    "capabilities": {
+      "dev.ucp.shopping.checkout": [
+        {
+          "version": "2026-08-25"
+        }
+      ],
+      "io.github.agorail-labs.shopping.invoice_reference": [
+        {
+          "version": "2026-11-26",
+          "extends": [
+            "dev.ucp.shopping.checkout",
+            "dev.ucp.shopping.order"
+          ],
+          "spec": "https://agorail-labs.github.io/invoice-registration-reference/spec/invoice-registration-reference-v0.1",
+          "schema": "https://agorail-labs.github.io/invoice-registration-reference/schema/invoice_reference.json"
+        }
+      ]
+    },
+    "payment_handlers": {}
+  },
+  "id": "chk_example1_operator_sample",
+  "status": "completed",
+  "currency": "INR",
+  "line_items": [
+    {
+      "id": "li_1",
+      "item": {
+        "id": "item_39231010",
+        "title": "Goods as invoiced on CTDN23456 (main HSN 39231010)",
+        "price": 1665000
+      },
+      "quantity": 1,
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 1665000
+        },
+        {
+          "type": "total",
+          "amount": 1665000
+        }
+      ]
+    }
+  ],
+  "totals": [
+    {
+      "type": "subtotal",
+      "amount": 1665000
+    },
+    {
+      "type": "total",
+      "amount": 1665000
+    }
+  ],
+  "links": [
+    {
+      "type": "terms_of_service",
+      "url": "https://example.com/terms"
+    }
+  ],
+  "invoice_reference": [
+    {
+      "line_item_id": "li_1",
+      "document": {
+        "number": "CTDN23456",
+        "type": "INV",
+        "issuer_tax_identity": "37BZNPM9430M1KL",
+        "issue_date": "2020-08-05",
+        "total": 1665000
+      },
+      "registration": {
+        "scheme": "in_gst_einvoice_irp",
+        "identifier": "afdcc32a0eaa3a054cffcd251884d3e3f4f726b75c8943e7d35fbabc82f05d8a",
+        "artifact_digest": "sha256:56828610730e3bb5b209c1b8734a56e01483a03c714fc288ac5d075937b5bca0"
+      },
+      "status": {
+        "value": "not_established",
+        "observed_at": "2020-08-06T09:00:00+05:30"
+      }
+    }
+  ]
+}

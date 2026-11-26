@@ -1,0 +1,16 @@
+{
+  "iss": "SIMULATED-IRP",
+  "AckNo": "SIMACK202611200042",
+  "AckDt": "2026-11-20T10:15:23+05:30",
+  "Irn": "4d98959363b1b34d8f918b6688bcbb0abcf59d9982868507df158159d4202f3a",
+  "data": {
+    "SellerGstin": "29ABCDE1234F1Z5",
+    "BuyerGstin": "29PQRST6789K1Z2",
+    "DocNo": "EXMPL/2026-27/0042",
+    "DocTyp": "INV",
+    "DocDt": "20/11/2026",
+    "TotInvVal": 118000,
+    "ItemCnt": 1,
+    "MainHsnCode": "84713010"
+  }
+}

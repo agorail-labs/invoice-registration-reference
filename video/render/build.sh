@@ -46,7 +46,7 @@ done
 # Concatenate scenes
 : > tmp/all.txt
 for s in s1 s2 s3 s4 s5; do echo "file '$s.mp4'" >> tmp/all.txt; done
-ffmpeg -v error -y -f concat -safe 0 -i tmp/all.txt -c:v libx264 -crf 21 -preset medium -c:a aac -b:a 128k "$OUT/irr-demo.mp4"
+ffmpeg -v error -y -f concat -safe 0 -i tmp/all.txt -c:v libx264 -crf 21 -preset medium -c:a aac -b:a 128k -movflags +faststart "$OUT/irr-demo.mp4"
 
 # 15-second silent preview (no audio track)
 : > tmp/preview.txt
@@ -56,7 +56,7 @@ for f, dur in [("s1_b.png", 4.0), ("s2_c.png", 4.0), ("s3_c.png", 4.0), ("s5_a.p
     print(f"duration {dur}")
 print("file '../frames/s5_a.png'")
 PY
-ffmpeg -v error -y -f concat -safe 0 -i tmp/preview.txt -an -vf "fps=30,format=yuv420p" -c:v libx264 -crf 24 -preset medium -t 15 "$OUT/irr-preview-15s.mp4"
+ffmpeg -v error -y -f concat -safe 0 -i tmp/preview.txt -an -vf "fps=30,format=yuv420p" -c:v libx264 -crf 24 -preset medium -movflags +faststart -t 15 "$OUT/irr-preview-15s.mp4"
 
 cp frames/poster.png "$OUT/poster.png"
 echo "built:"; ls -la "$OUT"

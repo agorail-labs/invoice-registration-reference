@@ -2,8 +2,8 @@
 
 **Verifier:** `verifier/invoice_reference_verifier.py` — computes the
 three verdicts from inputs; nothing is precomputed or fixed.
-**Suite:** `verifier/tests/test_verifier.py` (unittest, 27 tests).
-**Results:** all 27 tests pass; full output in
+**Suite:** `verifier/tests/test_verifier.py` (unittest, 32 tests).
+**Results:** all 32 tests pass; full output in
 `conformance/test-results.txt` (run 26 November 2026). The Gate 1
 harness still passes 36/36 (`validation/validation-results.txt`); its
 schema fetches now resolve against a pinned cache of the published
@@ -62,6 +62,22 @@ the verdicts. One variant file per broken binding:
 | `capture-payment-id` | capture payment id ≠ configured expected id | active **not established** |
 | `order-checkout-id` | order `checkout_id` ≠ checkout id | signed **not established** |
 | `status-different-irn` | status JWS validly signed, different IRN | active **not established** (binding, not signature validity) |
+
+## RC3 publication blockers (fixed in RC3)
+
+The lead reproduced four verdict defects against RC2 (commit
+4996bcb). Each test below **fails on 4996bcb and passes on RC3**; the
+existing 27 tests were kept and still pass.
+
+| # | Case (as reproduced) | RC2 returned | Required / RC3 | Fix |
+| --- | --- | --- | --- | --- |
+| 1 | Only the checkout supplies `registered_at` (artifact binds no registration time) | active **established** | **not established** | The reference's `registered_at` fallback is removed; the registration time comes only from a bound, verified artifact (spec §8.4) |
+| 2 | Registration time taken from an artifact that fails digest and IRN binding | active **established** | **not established** | `_active` now requires the artifact's digest to equal the reference's `artifact_digest` and its IRN to equal the reference's identifier before any timestamp is read |
+| 3 | No configured expected payment ID | active **established** | **not established** | A missing configured expected payment identifier is now itself a binding failure (spec §8.4) |
+| 4 | Signed invoice's nested `DocDtls.No` differs from the reference | matches **established** | **contradicted** | `artifact_fields` maps the signed invoice's nested `DocDtls` / `SellerDtls` / `ValDtls` onto the compared fields; a positive control (nested structure agreeing) establishes both verdicts |
+
+Tests: `RC3Blockers` in `verifier/tests/test_verifier.py` (5 tests:
+the four blockers plus the blocker-4 positive control).
 
 ## Notes
 

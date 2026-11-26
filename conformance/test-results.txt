@@ -25,8 +25,13 @@ test_status_different_irn_variant (test_verifier.FileRegressions.test_status_dif
 test_capture_currency_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_currency_mutation_active_not_established) ... ok
 test_capture_payment_id_mutation_active_not_established (test_verifier.LeadMutationsOnExample2.test_capture_payment_id_mutation_active_not_established) ... ok
 test_order_checkout_id_mutation_signed_not_established (test_verifier.LeadMutationsOnExample2.test_order_checkout_id_mutation_signed_not_established) ... ok
+test_nested_docdtls_matching_established (test_verifier.RC3Blockers.test_nested_docdtls_matching_established) ... ok
+test_nested_docdtls_number_mismatch_contradicted (test_verifier.RC3Blockers.test_nested_docdtls_number_mismatch_contradicted) ... ok
+test_no_configured_expected_payment_id (test_verifier.RC3Blockers.test_no_configured_expected_payment_id) ... ok
+test_registered_at_supplied_only_by_checkout (test_verifier.RC3Blockers.test_registered_at_supplied_only_by_checkout) ... ok
+test_time_from_artifact_failing_digest_and_irn_binding (test_verifier.RC3Blockers.test_time_from_artifact_failing_digest_and_irn_binding) ... ok
 
 ----------------------------------------------------------------------
-Ran 27 tests in 1.203s
+Ran 32 tests in 1.547s
 
 OK

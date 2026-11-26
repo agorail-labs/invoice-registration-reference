@@ -224,6 +224,16 @@ event and no cancellation took effect at or before it.
   conflict between two authenticated sources by preferring one silently.
 - The business's `status` claim never moves any verdict in either
   direction.
+- **The reference's `registered_at` never supplies the registration
+  time.** It is part of the business's statement. The registration
+  time for this verdict comes only from an artifact that is bound to
+  the reference (digest and identifier) and verifies; where no such
+  artifact binds a registration time, this verdict is **not
+  established**, however complete the rest of the evidence is.
+- **No configured expected payment identifier, no binding.** Where
+  the verifier's configuration carries no expected payment
+  identifier, a capture cannot be bound to the checkout's payment
+  and this verdict is **not established**.
 - **Scheme timestamps without an offset.** The IRP's registration time
   (AckDt) arrives with **no timezone offset** (section 9). An adapter
   may use such a timestamp for event ordering only under a documented

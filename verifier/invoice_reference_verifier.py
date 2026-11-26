@@ -138,7 +138,13 @@ def artifact_fields(payload: dict) -> dict:
     """Flatten a signed artifact payload: fields may sit at the top
     level (Example 2's simulation), inside a nested `data` object
     (production IRP shape, Example 3), or inside a `data` JSON string
-    (the published signed QR code, Example 1)."""
+    (the published signed QR code, Example 1).
+
+    The signed invoice's own structure nests the compared fields one
+    level deeper -- DocDtls (No/Typ/Dt), SellerDtls (Gstin), ValDtls
+    (TotInvVal); those are mapped onto the flat names the comparison
+    uses. (RC3 blocker 4: a DocDtls.No that differed from the
+    reference previously went unseen and matches was established.)"""
     fields = dict(payload)
     data = payload.get("data")
     if isinstance(data, str):
@@ -150,6 +156,17 @@ def artifact_fields(payload: dict) -> dict:
         merged = dict(data)
         merged.update({k: v for k, v in payload.items() if k != "data" and v is not None})
         fields = merged
+    doc_dtls = fields.get("DocDtls")
+    if isinstance(doc_dtls, dict):
+        fields.setdefault("DocNo", doc_dtls.get("No"))
+        fields.setdefault("DocTyp", doc_dtls.get("Typ"))
+        fields.setdefault("DocDt", doc_dtls.get("Dt"))
+    seller_dtls = fields.get("SellerDtls")
+    if isinstance(seller_dtls, dict):
+        fields.setdefault("SellerGstin", seller_dtls.get("Gstin"))
+    val_dtls = fields.get("ValDtls")
+    if isinstance(val_dtls, dict):
+        fields.setdefault("TotInvVal", val_dtls.get("TotInvVal"))
     return fields
 
 
@@ -309,7 +326,12 @@ def _active(ref: dict, checkout: dict, bundle: dict, status_claims, status_note,
         binding_failures.append("payment event is not a confirmed capture")
     if pay.get("checkout_id") != checkout["id"]:
         binding_failures.append("capture checkout_id does not equal the accepted checkout id")
-    if config.expected_payment_id is not None and pay.get("payment_id") != config.expected_payment_id:
+    if config.expected_payment_id is None:
+        # RC3 blocker 3: without an independently configured expected
+        # payment identifier the capture cannot be bound at all.
+        binding_failures.append("no expected payment identifier is configured; "
+                                "the capture cannot be bound to the checkout's payment")
+    elif pay.get("payment_id") != config.expected_payment_id:
         binding_failures.append("capture payment_id is not the expected payment identifier")
     if pay.get("amount") != total:
         binding_failures.append("capture amount does not equal the checkout total")
@@ -323,27 +345,45 @@ def _active(ref: dict, checkout: dict, bundle: dict, status_claims, status_note,
     if pay_time is None:
         return _verdict(NOT_ESTABLISHED, "no trusted payment time supplied")
 
-    # Authenticated registration time: from the verified artifact's
-    # AckDt where present, else the reference's registered_at.
+    # Authenticated registration time: ONLY from an artifact that is
+    # bound to this reference (its digest is the reference's
+    # artifact_digest and its IRN is the reference's identifier) and
+    # whose signature verifies -- and only from that artifact's AckDt.
+    # RC3 blocker 1: the reference's own registered_at is the
+    # business's statement, never evidence; it supplied the time here
+    # before and established this verdict on a claim.
+    # RC3 blocker 2: an artifact failing digest or IRN binding
+    # previously supplied its AckDt on signature validity alone.
     reg_time = None
     artifact = bundle.get("artifact")
     if artifact:
+        digest = "sha256:" + hashlib.sha256(artifact.strip().encode()).hexdigest()
+        if digest != reg["artifact_digest"]:
+            return _verdict(NOT_ESTABLISHED,
+                            "supplied artifact does not match the reference's "
+                            "artifact_digest; its timestamps are not evidence "
+                            "for this reference")
         try:
             fields = artifact_fields(verify_rs256(artifact.strip(), config.scheme_public_key))
-            if fields.get("AckDt"):
-                reg_time = aware_time(fields["AckDt"], config)
-                if reg_time is None:
-                    return _verdict(NOT_ESTABLISHED,
-                                    "registration time (AckDt) carries no offset and no "
-                                    "documented scheme timezone is configured, so it "
-                                    "cannot be ordered against the payment event")
         except (InvalidSignature, ValueError, KeyError):
             return _verdict(NOT_ESTABLISHED, "artifact does not verify; no authenticated registration time")
-    if reg_time is None and reg.get("registered_at"):
-        reg_time = aware_time(reg["registered_at"], config)
+        if fields.get("Irn") != reg["identifier"]:
+            return _verdict(NOT_ESTABLISHED,
+                            "supplied artifact binds a different registration "
+                            "identifier; its timestamps are not evidence for "
+                            "this reference")
+        if fields.get("AckDt"):
+            reg_time = aware_time(fields["AckDt"], config)
+            if reg_time is None:
+                return _verdict(NOT_ESTABLISHED,
+                                "registration time (AckDt) carries no offset and no "
+                                "documented scheme timezone is configured, so it "
+                                "cannot be ordered against the payment event")
     if reg_time is None:
         return _verdict(NOT_ESTABLISHED,
-                        "no authenticated registration time at usable precision")
+                        "no authenticated registration time at usable precision "
+                        "(the reference's registered_at is a business claim, "
+                        "not evidence)")
 
     if status_claims is None:
         return _verdict(NOT_ESTABLISHED, status_note or "no authenticated status evidence")

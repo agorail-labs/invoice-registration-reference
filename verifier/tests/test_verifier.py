@@ -363,6 +363,85 @@ class ConformanceCases(unittest.TestCase):
         self.assertEqual(r["verdicts"]["registration_active_at_payment"]["verdict"], E)
 
 
+class RC3Blockers(unittest.TestCase):
+    """The four publication blockers from the RC1/RC2 review.
+
+    Each of the first four tests FAILS on the RC2 verifier (commit
+    4996bcb) and passes on the RC3 verifier; the fifth is the positive
+    control for the fourth. Required results are the review's.
+    """
+
+    M, A = "registration_matches_invoice", "registration_active_at_payment"
+
+    def test_registered_at_supplied_only_by_checkout(self):
+        # The artifact binds no registration time; only the checkout's
+        # own registered_at claim supplies one. A business claim is not
+        # authenticated evidence: active must be not_established.
+        f = Factory()
+        artifact = f.artifact(AckDt=None)
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], E)
+        self.assertEqual(verdicts(r)[self.A], N)
+
+    def test_time_from_artifact_failing_digest_and_irn_binding(self):
+        # A validly signed artifact for a DIFFERENT invoice: it fails
+        # the reference's digest and its IRN binding. Its AckDt must
+        # not supply the registration time.
+        f = Factory()
+        genuine = f.artifact()
+        checkout, order = f.checkout_order(f.reference(genuine))
+        other = f.artifact(Irn=hashlib.sha256(b"a-different-invoice").hexdigest())
+        bundle = {"artifact": other, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.A], N)
+
+    def test_no_configured_expected_payment_id(self):
+        # With no expected payment identifier in the verifier's
+        # configuration, the capture cannot be bound to the checkout's
+        # payment: active must be not_established.
+        import dataclasses
+        f = Factory()
+        checkout, order, bundle = f.genuine()
+        cfg = dataclasses.replace(f.config, expected_payment_id=None)
+        r = V.verify(checkout, order, bundle, cfg)
+        self.assertEqual(verdicts(r)[self.A], N)
+
+    def _nested_artifact(self, f, doc_no):
+        payload = {"data": {
+            "DocDtls": {"Typ": "INV", "No": doc_no, "Dt": "20/11/2026"},
+            "SellerDtls": {"Gstin": SELLER},
+            "ValDtls": {"TotInvVal": TOTAL // 100},
+            "AckNo": "SIMACK1", "AckDt": REG_AT, "Irn": f.irn}}
+        return f.rs256(payload)
+
+    def test_nested_docdtls_number_mismatch_contradicted(self):
+        # The signed invoice's nested DocDtls.No differs from the
+        # reference's document number: matches must be contradicted.
+        f = Factory()
+        artifact = self._nested_artifact(f, "OTHER/2026-27/9999")
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], C)
+
+    def test_nested_docdtls_matching_established(self):
+        # Positive control: the same nested structure, agreeing with
+        # the reference, establishes both verdicts.
+        f = Factory()
+        artifact = self._nested_artifact(f, f.doc_no)
+        checkout, order = f.checkout_order(f.reference(artifact))
+        bundle = {"artifact": artifact, "status_evidence": f.status(),
+                  "payment_event": f.capture()}
+        r = V.verify(checkout, order, bundle, f.config)
+        self.assertEqual(verdicts(r)[self.M], E)
+        self.assertEqual(verdicts(r)[self.A], E)
+
+
 class FileRegressions(unittest.TestCase):
     """RC2: the four verdict regressions as file-based end-to-end cases.
 

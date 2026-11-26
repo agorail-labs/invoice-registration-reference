@@ -2,8 +2,8 @@
 
 **Video:** "Agorail: When an AI Agent Pays an Invoice, What Proves It Was Real?"
 **Rendered:** 2026-11-26 (IST) · **Final runtime:** 85.29 s, 1920×1080, 30 fps.
-**Deliverables:** `dist/irr-demo.mp4` (sha256 c02da058da8f8229…),
-`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 83afe449365d884c…),
+**Deliverables:** `dist/irr-demo.mp4` (sha256 c621f31e8b9b15b7…),
+`dist/irr-preview-15s.mp4` (15.00 s, silent; sha256 1cf2738362f560ea…),
 `dist/captions.vtt` (21 cues), `dist/poster.png`.
 
 ## What was actually run
@@ -146,3 +146,12 @@ real run of that package:
   example. One layout defect found in QC (verdict rows overflowing
   the terminal box) was fixed and the film rebuilt before this
   record was written.
+
+## Faststart rewrap (26 November 2026, after review)
+
+The reviewed film's MP4 index (moov atom) sat at the end of the
+file, and the in-app player stalled partway through. Both dist
+MP4s were re-wrapped with `-movflags +faststart` (stream copy —
+identical picture and audio, index moved to the front) and
+`render/build.sh` now encodes with faststart directly. The full
+file was verified to decode with zero errors before and after.
